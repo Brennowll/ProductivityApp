@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: Nunito-Regular;
+    src: url(./fonts/Nunito-Regular.ttf);
+  }
+  @font-face {
+    font-family: Nunito-X-Bold;
+    src: url(./fonts/Nunito-ExtraBold.ttf);
+  }
+  .filter-gray {
+    filter: invert(39%) sepia(11%) saturate(27%) hue-rotate(19deg) brightness(95%) contrast(91%);
+  }
+  .filter-orange {
+    filter: invert(42%) sepia(33%) saturate(5753%) hue-rotate(6deg) brightness(106%) contrast(103%);
+  }
+  .filter-green {
+    filter: invert(56%) sepia(6%) saturate(4157%) hue-rotate(109deg) brightness(102%) contrast(95%);
+  }
+  .filter-blue {
+    filter: invert(63%) sepia(46%) saturate(5035%) hue-rotate(196deg) brightness(90%) contrast(86%);
+  }
+}
