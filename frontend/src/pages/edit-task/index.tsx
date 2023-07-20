@@ -1,7 +1,7 @@
 import { useContext } from "react"
-import { StateGlobalContext } from "../StateGlobalProvider"
+import { GlobalStateContext } from "../../store/GlobalStateProvider"
 
-const EditCreateTask = () => {
+export const EditTask = () => {
   const {
     userTasks,
     setUserTasks,
@@ -10,7 +10,7 @@ const EditCreateTask = () => {
     editCreateTaskTextValue,
     setEditCreateTaskTextValue,
     createTaskIsActive,
-  } = useContext(StateGlobalContext)
+  } = useContext(GlobalStateContext)
 
   const handleTextAreaChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -90,5 +90,3 @@ const EditCreateTask = () => {
     </div>
   )
 }
-
-export default EditCreateTask

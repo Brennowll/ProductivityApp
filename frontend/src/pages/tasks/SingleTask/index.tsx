@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { StateGlobalContext } from "../StateGlobalProvider"
+import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 
 import iconCheck from "/src/assets/svg/icon_check.svg"
 import iconThreeDots from "/src/assets/svg/icon_three_dots.svg"
@@ -9,7 +9,7 @@ interface SingleTaskProps {
   taskText: string
 }
 
-const SingleTask = (props: SingleTaskProps) => {
+export const SingleTask = (props: SingleTaskProps) => {
   const {
     userTasks,
     setUserTasks,
@@ -17,7 +17,7 @@ const SingleTask = (props: SingleTaskProps) => {
     setTaskIdSelected,
     setEditCreateTaskTextValue,
     setCreateTaskIsActive,
-  } = useContext(StateGlobalContext)
+  } = useContext(GlobalStateContext)
   const specificTaskOptionsId = `taskOptions${props.taskId}`
 
   const handleShowTaskOptions = () => {
@@ -99,5 +99,3 @@ const SingleTask = (props: SingleTaskProps) => {
     </div>
   )
 }
-
-export default SingleTask

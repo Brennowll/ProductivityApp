@@ -11,7 +11,7 @@ interface UserTask {
   taskText: string
 }
 
-interface StateGlobalContextType {
+interface GlobalStateContextType {
   navButtonActive: string
   setNavButtonActive: Dispatch<SetStateAction<string>>
   userTasks: UserTask[]
@@ -26,17 +26,17 @@ interface StateGlobalContextType {
   setCreateTaskIsActive: Dispatch<SetStateAction<boolean>>
 }
 
-export const StateGlobalContext = createContext<StateGlobalContextType>(
-  {} as StateGlobalContextType
+export const GlobalStateContext = createContext<GlobalStateContextType>(
+  {} as GlobalStateContextType
 )
 
-interface StateGlobalProviderProps {
+interface GlobalStateProviderProps {
   children: ReactNode
 }
 
-const StateGlobalProvider: React.FC<StateGlobalProviderProps> = ({
+const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   children,
-}: StateGlobalProviderProps) => {
+}: GlobalStateProviderProps) => {
   const [navButtonActive, setNavButtonActive] = useState<string>("HOME")
   const [userTasks, setUserTasks] = useState<UserTask[]>([
     { id: 1, taskText: "Task 1" },
@@ -50,7 +50,7 @@ const StateGlobalProvider: React.FC<StateGlobalProviderProps> = ({
   const [createTaskIsActive, setCreateTaskIsActive] = useState<boolean>(false)
 
   return (
-    <StateGlobalContext.Provider
+    <GlobalStateContext.Provider
       value={{
         navButtonActive,
         setNavButtonActive,
@@ -67,8 +67,8 @@ const StateGlobalProvider: React.FC<StateGlobalProviderProps> = ({
       }}
     >
       {children}
-    </StateGlobalContext.Provider>
+    </GlobalStateContext.Provider>
   )
 }
 
-export default StateGlobalProvider
+export default GlobalStateProvider

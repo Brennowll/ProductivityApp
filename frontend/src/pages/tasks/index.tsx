@@ -1,16 +1,16 @@
 import { useContext } from "react"
 
-import SingleTask from "./SingleTask"
-import { StateGlobalContext } from "../StateGlobalProvider"
+import { SingleTask } from "./SingleTask"
+import { GlobalStateContext } from "../../store/GlobalStateProvider"
 import iconAddTask from "/src/assets/svg/icon_add_task.svg"
 
-const MainTasks = () => {
+export const Tasks = () => {
   const {
     userTasks,
     setEditCreateTaskIsOpen,
     setCreateTaskIsActive,
     setEditCreateTaskTextValue,
-  } = useContext(StateGlobalContext)
+  } = useContext(GlobalStateContext)
 
   const addTaskButtonStyle =
     "relative ml-2 mt-2 flex w-28 flex-row before:absolute before:bottom-0 \
@@ -51,5 +51,3 @@ const MainTasks = () => {
     </section>
   )
 }
-
-export default MainTasks

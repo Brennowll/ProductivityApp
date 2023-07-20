@@ -1,7 +1,7 @@
 import searchIcon from "/src/assets/svg/icon_search.svg"
 import userIcon from "/src/assets/svg/icon_user.svg"
 
-const TopBar = () => {
+export const SearchUserBar = () => {
   return (
     <div
       className="mb-4 flex h-16 flex-row items-center justify-between 
@@ -31,5 +31,3 @@ const TopBar = () => {
     </div>
   )
 }
-
-export default TopBar

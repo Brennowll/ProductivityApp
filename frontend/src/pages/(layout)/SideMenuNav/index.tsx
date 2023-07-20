@@ -1,4 +1,4 @@
-import NavButton from "./NavButton"
+import { NavButton } from "./NavButton"
 
 import iconLogo from "/src/assets/svg/icon_naruto_logo.svg"
 import iconHome from "/src/assets/svg/icon_home.svg"
@@ -7,7 +7,7 @@ import iconNote from "/src/assets/svg/icon_note.svg"
 import iconCalendar from "/src/assets/svg/icon_calendar.svg"
 import iconSettings from "/src/assets/svg/icon_settings.svg"
 
-const LeftNavBar = () => {
+export const SideMenuNav = () => {
   return (
     <div className="flex h-full w-1/4 max-w-250px flex-col justify-between rounded-xl bg-myBgWhite">
       <div className="flex h-1/2 w-full flex-col items-center justify-start rounded-t-xl">
@@ -35,5 +35,3 @@ const LeftNavBar = () => {
     </div>
   )
 }
-
-export default LeftNavBar

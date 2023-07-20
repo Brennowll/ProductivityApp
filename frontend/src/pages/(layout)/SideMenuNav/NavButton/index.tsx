@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { StateGlobalContext } from "../StateGlobalProvider"
+import { GlobalStateContext } from "../../../../store/GlobalStateProvider"
 
 interface Props {
   text: string
@@ -7,8 +7,8 @@ interface Props {
   buttonName: string
 }
 
-const NavButton = (props: Props) => {
-  const globalContext = useContext(StateGlobalContext)
+export const NavButton = (props: Props) => {
+  const globalContext = useContext(GlobalStateContext)
 
   const buttonActived = globalContext.navButtonActive === props.buttonName
 
@@ -37,5 +37,3 @@ const NavButton = (props: Props) => {
     </button>
   )
 }
-
-export default NavButton
