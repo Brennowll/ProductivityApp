@@ -11,6 +11,7 @@
     font-family: Nunito-X-Bold;
     src: url(./fonts/Nunito-ExtraBold.ttf);
   }
+
   .filter-gray {
     filter: invert(39%) sepia(11%) saturate(27%) hue-rotate(19deg) brightness(95%) contrast(91%);
   }

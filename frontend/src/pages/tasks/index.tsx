@@ -44,10 +44,12 @@ export const Tasks = () => {
           </p>
         )}
       </div>
-      <button className={addTaskButtonStyle} onClick={handleAddTask}>
-        <img src={iconAddTask} alt="" className="h-6" />
-        <p className="pl-2">Add Task</p>
-      </button>
+      <div className="pb-5">
+        <button className={addTaskButtonStyle} onClick={handleAddTask}>
+          <img src={iconAddTask} alt="" className="h-6" />
+          <p className="pl-2">Add Task</p>
+        </button>
+      </div>
     </section>
   )
 }

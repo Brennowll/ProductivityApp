@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { GlobalStateContext } from "../../store/GlobalStateProvider"
+import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 
 export const EditTask = () => {
   const {

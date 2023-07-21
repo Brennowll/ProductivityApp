@@ -1,39 +1,38 @@
-import { useContext } from "react"
-import { GlobalStateContext } from "../../../../store/GlobalStateProvider"
+import { Link, useLocation } from "react-router-dom"
 
 interface Props {
-  text: string
-  imgSrc: string
   buttonName: string
+  href: string
+  imgSrc: string
 }
 
 export const NavButton = (props: Props) => {
-  const globalContext = useContext(GlobalStateContext)
-
-  const buttonActived = globalContext.navButtonActive === props.buttonName
+  const location = useLocation()
+  const isButtonLocation = location.pathname === props.href
 
   return (
     <button
       className={`items-middle h-14 w-full justify-center transition-all ease-in-out hover:bg-myBgGray
-        ${buttonActived ? " border-r-4 border-myOrange" : ""}`}
-      onClick={() => globalContext.setNavButtonActive(props.buttonName)}
+        ${isButtonLocation ? " border-r-4 border-myOrange" : ""}`}
     >
-      <div className="ml-3 flex flex-row items-center justify-start text-myDarkGray">
-        <img
-          src={props.imgSrc}
-          alt=""
-          className={`mx-3 h-9 transition-all duration-700 ease-in-out ${
-            buttonActived ? "filter-orange" : "filter-gray"
-          }`}
-        />
-        <p
-          className={`p-3 font-nunitoXBold transition-all duration-700 ease-in-out ${
-            buttonActived ? "text-myOrange" : "text-myDarkGray"
-          }`}
-        >
-          {props.text}
-        </p>
-      </div>
+      <Link to={props.href}>
+        <div className="ml-3 flex flex-row items-center justify-start text-myDarkGray">
+          <img
+            src={props.imgSrc}
+            alt=""
+            className={`mx-3 h-9 transition-all duration-700 ease-in-out ${
+              isButtonLocation ? "filter-orange" : "filter-gray"
+            }`}
+          />
+          <p
+            className={`p-3 font-nunitoXBold uppercase transition-all duration-700 ease-in-out ${
+              isButtonLocation ? "text-myOrange" : "text-myDarkGray"
+            }`}
+          >
+            {props.buttonName}
+          </p>
+        </div>
+      </Link>
     </button>
   )
 }

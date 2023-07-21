@@ -15,12 +15,12 @@ export const SideMenuNav = () => {
           <img src={iconLogo} alt="" className="h-12" />
         </figure>
         <nav className="w-full">
-          <NavButton buttonName="HOME" text="HOME" imgSrc={iconHome} />
-          <NavButton buttonName="TASKS" text="TASKS" imgSrc={iconTasks} />
-          <NavButton buttonName="NOTES" text="NOTES" imgSrc={iconNote} />
+          <NavButton buttonName="home" href="/home" imgSrc={iconHome} />
+          <NavButton buttonName="tasks" href="/tasks" imgSrc={iconTasks} />
+          <NavButton buttonName="notes" href="/notes" imgSrc={iconNote} />
           <NavButton
-            buttonName="CALENDAR"
-            text="CALENDAR"
+            buttonName="calendar"
+            href="/calendar"
             imgSrc={iconCalendar}
           />
         </nav>
@@ -28,7 +28,7 @@ export const SideMenuNav = () => {
       <div className="flex h-1/6 items-center justify-center rounded-b-2xl">
         <NavButton
           buttonName="SETTINGS"
-          text="SETTINGS"
+          href="/settings"
           imgSrc={iconSettings}
         />
       </div>
