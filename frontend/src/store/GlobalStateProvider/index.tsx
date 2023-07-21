@@ -12,16 +12,14 @@ interface UserTask {
 }
 
 interface GlobalStateContextType {
-  navButtonActive: string
-  setNavButtonActive: Dispatch<SetStateAction<string>>
   userTasks: UserTask[]
   setUserTasks: Dispatch<SetStateAction<UserTask[]>>
-  editCreateTaskIsOpen: boolean
-  setEditCreateTaskIsOpen: Dispatch<SetStateAction<boolean>>
+  editTaskIsOpen: boolean
+  setEditTaskIsOpen: Dispatch<SetStateAction<boolean>>
   taskIdSelected: number
   setTaskIdSelected: Dispatch<SetStateAction<number>>
-  editCreateTaskTextValue: string
-  setEditCreateTaskTextValue: Dispatch<SetStateAction<string>>
+  editTaskTextValue: string
+  setEditTaskTextValue: Dispatch<SetStateAction<string>>
   createTaskIsActive: boolean
   setCreateTaskIsActive: Dispatch<SetStateAction<boolean>>
 }
@@ -37,31 +35,26 @@ interface GlobalStateProviderProps {
 const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   children,
 }: GlobalStateProviderProps) => {
-  const [navButtonActive, setNavButtonActive] = useState<string>("HOME")
   const [userTasks, setUserTasks] = useState<UserTask[]>([
     { id: 1, taskText: "Task 1" },
     { id: 2, taskText: "Task 2" },
   ])
-  const [editCreateTaskIsOpen, setEditCreateTaskIsOpen] =
-    useState<boolean>(false)
+  const [editTaskIsOpen, setEditTaskIsOpen] = useState<boolean>(false)
   const [taskIdSelected, setTaskIdSelected] = useState<number>(0)
-  const [editCreateTaskTextValue, setEditCreateTaskTextValue] =
-    useState<string>("")
+  const [editTaskTextValue, setEditTaskTextValue] = useState<string>("")
   const [createTaskIsActive, setCreateTaskIsActive] = useState<boolean>(false)
 
   return (
     <GlobalStateContext.Provider
       value={{
-        navButtonActive,
-        setNavButtonActive,
         userTasks,
         setUserTasks,
-        editCreateTaskIsOpen,
-        setEditCreateTaskIsOpen,
+        editTaskIsOpen,
+        setEditTaskIsOpen,
         taskIdSelected,
         setTaskIdSelected,
-        editCreateTaskTextValue,
-        setEditCreateTaskTextValue,
+        editTaskTextValue,
+        setEditTaskTextValue,
         createTaskIsActive,
         setCreateTaskIsActive,
       }}

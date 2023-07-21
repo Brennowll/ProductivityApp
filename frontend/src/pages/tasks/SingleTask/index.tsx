@@ -1,6 +1,6 @@
 import { useContext } from "react"
-import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 
+import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import iconCheck from "/src/assets/svg/icon_check.svg"
 import iconThreeDots from "/src/assets/svg/icon_three_dots.svg"
 
@@ -13,12 +13,11 @@ export const SingleTask = (props: SingleTaskProps) => {
   const {
     userTasks,
     setUserTasks,
-    setEditCreateTaskIsOpen,
+    setEditTaskIsOpen,
     setTaskIdSelected,
-    setEditCreateTaskTextValue,
+    setEditTaskTextValue,
     setCreateTaskIsActive,
   } = useContext(GlobalStateContext)
-  const specificTaskOptionsId = `taskOptions${props.taskId}`
 
   const handleShowTaskOptions = () => {
     const taskOptions = document.getElementById(specificTaskOptionsId)
@@ -37,11 +36,13 @@ export const SingleTask = (props: SingleTaskProps) => {
   }
 
   const handleEditTask = () => {
-    setCreateTaskIsActive(false)
-    setEditCreateTaskTextValue(props.taskText)
-    setEditCreateTaskIsOpen(true)
+    setEditTaskTextValue(props.taskText)
     setTaskIdSelected(props.taskId)
+    setCreateTaskIsActive(false)
+    setEditTaskIsOpen(true)
   }
+
+  const specificTaskOptionsId = `taskOptions${props.taskId}`
 
   return (
     <div
@@ -58,9 +59,11 @@ export const SingleTask = (props: SingleTaskProps) => {
           className="filter-gray bg hover:filter-green h-6"
         />
       </button>
+
       <div className="flex h-auto min-h-16 w-full items-center py-2 font-nunitoRegular">
         <p>{props.taskText}</p>
       </div>
+
       <div className="relative">
         <button className="mx-4 my-5 h-6 w-7">
           <img
