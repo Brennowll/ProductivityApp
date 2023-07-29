@@ -8,7 +8,7 @@ interface Props {
 
 export const NavButton = (props: Props) => {
   const location = useLocation()
-  const isButtonLocation = location.pathname === props.href
+  const isButtonLocation = location.pathname.startsWith(props.href)
 
   return (
     <button

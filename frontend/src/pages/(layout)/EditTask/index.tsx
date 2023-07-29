@@ -79,6 +79,7 @@ export const EditTask = () => {
           p-3 align-text-top font-nunitoRegular focus:outline-none"
             value={editTaskTextValue}
             onChange={handleTextAreaChange}
+            placeholder="Put your task here.."
           />
           <div className="space flex h-16 w-full items-end justify-end">
             <button
