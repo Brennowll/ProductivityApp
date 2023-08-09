@@ -165,55 +165,6 @@ For more in-depth information and detailed features, please refer to our [docume
 
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3 - [ ] Nested Feature
-      ChatGPT
-      Certainly! Here's the "Roadmap" section for your README.md:
-
-markdown
-Copy code
-
-## Roadmap
-
-Here's a glimpse into the future plans for the **Productivity App**. We're committed to continuously improving and enhancing the user experience. Check out the upcoming features and developments on our roadmap:
-
-- [ ] Feature 1: Enhance task categorization and tagging options.
-- [ ] Feature 2: Integrate real-time collaboration for shared tasks and notes.
-- [ ] Feature 3: Advanced notification system for reminders and deadlines.
-  - [ ] Nested Feature: Customizable notification preferences.
-
-We're dedicated to making the **Productivity App** even more valuable and versatile. Stay tuned for these exciting updates and more to come!
-
-If you have any suggestions or feature requests, feel free to reach out to us at [feedback@productivityapp.com](mailto:feedback@productivityapp.com). Your input plays a crucial role in shaping the future of the app.
-In this section, you can customize the features and their descriptions according to your project's roadmap. It's a great way to let users know about your future plans and improvements for the app.
-
-User
-mude as features para fazer a página de calendário, fazer a home page com o resumo de cada página anterior, e implementar um sistema de login. mantenha tudo em inglês
-ChatGPT
-Certainly! Here's the updated "Roadmap" section for your README.md:
-
-markdown
-Copy code
-
-## Roadmap
-
-Here's a glimpse into our future plans for the **Productivity App**. We're committed to continuous improvement and enhancing the user experience. Check out the upcoming features and developments on our roadmap:
-
-- [ ] Calendar Page: Create a fully functional calendar page where users can schedule and manage their appointments and events.
-- [ ] Home Page Enhancement: Develop a dynamic home page that provides a summary of tasks, notes, and calendar events for quick reference.
-- [ ] Login System: Implement a robust user authentication and login system to secure user data and enable personalized experiences.
-  - [ ] User Profiles: Develop user profiles for managing settings, preferences, and personal information.
-
-We're dedicated to making the **Productivity App** even more feature-rich and user-friendly. Stay tuned for these exciting updates and more!
-
-If you have any suggestions or feature requests, feel free to reach out to us at [feedback@productivityapp.com](mailto:feedback@productivityapp.com). Your input plays a crucial role in shaping the future of the app.
-Feel free to customize the feature descriptions and details further based on your project's vision and goals.
-
-<!-- ROADMAP -->
-
-## Roadmap
-
 Here's a glimpse into the future plans for the **Productivity App**. We're committed to continuously improving and enhancing the user experience. Check out the upcoming features and developments on our roadmap:
 
 - [ ] Calendar Page: Create a fully functional calendar page where users can schedule and manage their appointments and events.
