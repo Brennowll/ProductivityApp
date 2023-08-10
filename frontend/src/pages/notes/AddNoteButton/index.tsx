@@ -1,14 +1,7 @@
 import { useContext } from "react"
 import { useLocation } from "react-router-dom"
-
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import iconMore from "/src/assets/svg/icon_more.svg"
-
-interface UserNoteCategory {
-  id: number
-  name: string
-  color: string
-}
 
 export const AddNoteButton = () => {
   const {
@@ -25,11 +18,14 @@ export const AddNoteButton = () => {
   const categoryPathName =
     locationPaths[2] === "all" ? "Not Selected" : locationPaths[2]
 
-  const searchCategoryByName = (category: UserNoteCategory) => {
-    return category.name === categoryPathName
+  const getCategoryById = (categoryId: string) => {
+    const category = userNotesCategories.find(
+      (category) => category.name === categoryId
+    )
+    return category ? category.id : 0
   }
-  const category = userNotesCategories.find(searchCategoryByName)
-  const categoryIdValue = category ? category.id : 0
+
+  const categoryIdValue = getCategoryById(categoryPathName)
 
   const handleButtonClick = () => {
     setEditNoteTitleValue("")
@@ -41,11 +37,16 @@ export const AddNoteButton = () => {
 
   return (
     <button
-      className="flex h-52 w-52 items-center justify-center rounded-lg border-2 
-      border-transparent bg-myLightGray p-5 hover:border-myBlue active:bg-gray-300"
+      className="flex h-52 w-80 items-center justify-center
+      rounded-lg border-2 border-transparent bg-myLightGray
+      p-5 transition-colors ease-in-out
+      hover:border-slate-500 active:bg-gray-300 "
       onClick={handleButtonClick}
     >
-      <div className="h-1/2 w-1/2 items-center justify-center rounded-lg bg-myGray">
+      <div
+        className="flex h-1/2 w-1/2 items-center justify-center
+        rounded-lg bg-zinc-300"
+      >
         <img src={iconMore} alt="" className="filter-light-gray h-full" />
       </div>
     </button>

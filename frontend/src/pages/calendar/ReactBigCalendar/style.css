@@ -1,0 +1,68 @@
+@import url(src\global.css);
+
+.rbc-btn-group button {
+    font-family: "Nunito-Regular"
+}
+
+.rbc-btn-group button, .rbc-toolbar-label, .rbc-header, .rbc-event {
+    font-family: "Nunito-Regular"
+}
+
+.rbc-toolbar button:active, .rbc-toolbar button.rbc-active {
+    box-shadow: none;
+    background-color: #FF6600;
+    color: #fff;
+}
+
+.rbc-toolbar button:active:hover, .rbc-toolbar button:active:focus, .rbc-toolbar button.rbc-active:hover, .rbc-toolbar button.rbc-active:focus {
+    color: #fff;
+    background-color: #FF6600;
+    border-color: #8c8c8c;  
+}
+
+.rbc-toolbar button {
+    transition-property: background-color, color;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+}
+
+.rbc-show-more {
+    color: #ff8636;
+}
+
+.rbc-selected-day {
+    background-color: #ff660036;
+}
+
+.rbc-off-range-bg {
+    background: #F4F4F4;
+}
+
+.rbc-event, .rbc-day-slot .rbc-background-event {
+    border: none;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    margin: 0;
+    padding: 2px 5px;
+    background-color: #FF6600;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+  .rbc-slot-selecting .rbc-event, .rbc-slot-selecting .rbc-day-slot .rbc-background-event, .rbc-day-slot .rbc-slot-selecting .rbc-background-event {
+    cursor: inherit;
+    pointer-events: none;
+}
+
+  .rbc-event.rbc-selected, .rbc-day-slot .rbc-selected.rbc-background-event {
+    background-color: #FF6600;
+}
+
+  .rbc-event:focus, .rbc-day-slot .rbc-background-event:focus {
+    outline: 5px auto #646464;
+}

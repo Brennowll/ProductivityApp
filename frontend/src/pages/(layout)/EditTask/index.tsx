@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
+import { EditLayout } from "../EditLayout"
 
 export const EditTask = () => {
   const {
@@ -65,42 +66,38 @@ export const EditTask = () => {
   const saveButtonText = createTaskIsActive ? "Create" : "Save"
 
   return (
-    <div
-      className="absolute right-0 top-0 z-50 flex h-screen w-screen
-        items-center justify-center bg-black bg-opacity-40"
-    >
-      <div className="relative flex h-96 w-1/3 items-center bg-myLightGray opacity-100">
-        <div className="absolute -left-4 h-9/10 w-[2px] bg-myLightGray"></div>
-        <div className="absolute -right-4 h-9/10 w-[2px] bg-myLightGray"></div>
-        <div className="mx-4 flex h-full w-full flex-col py-4">
-          <textarea
-            id="editCreateTaskTextArea"
-            className="h-full w-full resize-none rounded-md border-2
+    <EditLayout>
+      <div
+        className="z-50 mx-4 flex h-full w-full flex-col rounded-lg
+          py-4"
+      >
+        <textarea
+          id="editCreateTaskTextArea"
+          className="h-full w-full resize-none rounded-md border-2
           p-3 align-text-top font-nunitoRegular focus:outline-none"
-            value={editTaskTextValue}
-            onChange={handleTextAreaChange}
-            placeholder="Put your task here.."
-          />
-          <div className="space flex h-16 w-full items-end justify-end">
-            <button
-              className="h-10 w-24 transform rounded-md bg-gray-400
+          value={editTaskTextValue}
+          onChange={handleTextAreaChange}
+          placeholder="Put your task here.."
+        />
+        <div className="space flex h-16 w-full items-end justify-end">
+          <button
+            className="h-10 w-24 transform rounded-md bg-gray-400
             font-nunitoRegular text-white transition-all hover:scale-105
             active:scale-100"
-              onClick={() => setEditTaskIsOpen(false)}
-            >
-              {cancelButtonText}
-            </button>
-            <button
-              className="ml-3 h-10 w-24 transform rounded-md
+            onClick={() => setEditTaskIsOpen(false)}
+          >
+            {cancelButtonText}
+          </button>
+          <button
+            className="ml-3 h-10 w-24 transform rounded-md
             bg-myBlue font-nunitoRegular text-white transition-all
             hover:scale-105 active:scale-100"
-              onClick={saveTask}
-            >
-              {saveButtonText}
-            </button>
-          </div>
+            onClick={saveTask}
+          >
+            {saveButtonText}
+          </button>
         </div>
       </div>
-    </div>
+    </EditLayout>
   )
 }

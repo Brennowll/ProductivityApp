@@ -24,6 +24,13 @@ interface UserNote {
   categoryId: number
 }
 
+interface CalendarEvent {
+  id: number
+  start: Date
+  end: Date
+  title: string
+}
+
 interface GlobalStateContextType {
   userTasks: UserTask[]
   setUserTasks: Dispatch<SetStateAction<UserTask[]>>
@@ -72,6 +79,15 @@ interface GlobalStateContextType {
   setColorSelected: Dispatch<SetStateAction<string>>
   categoryNameValue: string
   setCategoryNameValue: Dispatch<SetStateAction<string>>
+
+  myCalendarEvents: CalendarEvent[]
+  setMyCalendarEvents: Dispatch<SetStateAction<CalendarEvent[]>>
+  eventSelected: CalendarEvent
+  setEventSelected: Dispatch<SetStateAction<CalendarEvent>>
+  editEventIsOpen: boolean
+  setEditEventIsOpen: Dispatch<SetStateAction<boolean>>
+  createEventIsActived: boolean
+  setCreateEventIsActived: Dispatch<SetStateAction<boolean>>
 }
 
 export const GlobalStateContext = createContext<GlobalStateContextType>(
@@ -85,7 +101,12 @@ interface GlobalStateProviderProps {
 const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   children,
 }: GlobalStateProviderProps) => {
-  const [userTasks, setUserTasks] = useState<UserTask[]>([])
+  const [userTasks, setUserTasks] = useState<UserTask[]>([
+    { id: 1, taskText: "Limpar a mesa" },
+    { id: 2, taskText: "Levar o lixo para fora" },
+    { id: 3, taskText: "Walk with my dog" },
+    { id: 4, taskText: "Meditate before sleeping" },
+  ])
   const [editTaskIsOpen, setEditTaskIsOpen] = useState<boolean>(false)
   const [taskIdSelected, setTaskIdSelected] = useState<number>(0)
   const [editTaskTextValue, setEditTaskTextValue] = useState<string>("")
@@ -101,7 +122,13 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
     useState<string>("all")
 
   const [userNotes, setUserNotes] = useState<UserNote[]>([
-    { id: 1, title: "Titulo", description: "Description", categoryId: 1 },
+    {
+      id: 1,
+      title: "Titulo muito muito muito grande",
+      description:
+        "Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description",
+      categoryId: 1,
+    },
     { id: 2, title: "Titulo", description: "Description", categoryId: 1 },
     { id: 3, title: "Titulo", description: "Description", categoryId: 1 },
     { id: 4, title: "Titulo", description: "Description", categoryId: 2 },
@@ -128,6 +155,30 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   const [categoryIdSelected, setCategoryIdSelected] = useState<number>(0)
   const [colorSelected, setColorSelected] = useState<string>("")
   const [categoryNameValue, setCategoryNameValue] = useState<string>("")
+
+  const [myCalendarEvents, setMyCalendarEvents] = useState<CalendarEvent[]>([
+    {
+      id: 0,
+      title: "All Day Event very long title",
+      start: new Date(2023, 7, 0),
+      end: new Date(2023, 7, 1),
+    },
+    {
+      id: 1,
+      title: "Long Event",
+      start: new Date(2023, 7, 7),
+      end: new Date(2023, 7, 10),
+    },
+  ])
+  const [eventSelected, setEventSelected] = useState<CalendarEvent>({
+    id: 0,
+    start: new Date(),
+    end: new Date(),
+    title: "",
+  })
+  const [editEventIsOpen, setEditEventIsOpen] = useState<boolean>(true)
+  const [createEventIsActived, setCreateEventIsActived] =
+    useState<boolean>(false)
 
   return (
     <GlobalStateContext.Provider
@@ -177,6 +228,15 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
         setColorSelected,
         categoryNameValue,
         setCategoryNameValue,
+
+        myCalendarEvents,
+        setMyCalendarEvents,
+        eventSelected,
+        setEventSelected,
+        editEventIsOpen,
+        setEditEventIsOpen,
+        createEventIsActived,
+        setCreateEventIsActived,
       }}
     >
       {children}

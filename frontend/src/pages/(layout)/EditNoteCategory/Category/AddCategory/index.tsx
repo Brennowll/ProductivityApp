@@ -1,11 +1,11 @@
-import { useContext, Dispatch, SetStateAction } from "react"
+import React, { useContext } from "react"
 import { GlobalStateContext } from "../../../../../store/GlobalStateProvider"
 import { ColorButton } from "./ColorButton"
 import iconSingleCheck from "/src/assets/svg/icon_single_check.svg"
 import iconDelete from "/src/assets/svg/icon_delete.svg"
 
 interface AddCategoryProps {
-  setEditCategory: Dispatch<SetStateAction<boolean>>
+  setEditCategory: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface Category {
@@ -15,19 +15,9 @@ interface Category {
 }
 
 export const AddCategory = (props: AddCategoryProps) => {
-  const {
-    createCategoryIsActive,
-    categoryIdSelected,
-    userNotesCategories,
-    setUserNotesCategories,
-    colorSelected,
-    setColorSelected,
-    categoryNameValue,
-    setCategoryNameValue,
-  } = useContext(GlobalStateContext)
-
+  const context = useContext(GlobalStateContext)
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCategoryNameValue(event.target.value)
+    context.setCategoryNameValue(event.target.value)
   }
 
   const colors = [
@@ -45,52 +35,54 @@ export const AddCategory = (props: AddCategoryProps) => {
 
   const colorButtonMap = colors.map((color) => (
     <ColorButton
+      key={color}
       color={color}
-      active={color === colorSelected ? true : false}
-      setColorSelected={setColorSelected}
+      active={color === context.colorSelected}
+      setColorSelected={context.setColorSelected}
     />
   ))
 
   const searchCategory = (category: Category) => {
-    return category.id === categoryIdSelected
+    return category.id === context.categoryIdSelected
   }
 
   const handleSaveButton = () => {
-    const userNotesCategoriesCopy = [...userNotesCategories]
-    if (createCategoryIsActive) {
+    const userNotesCategoriesCopy = [...context.userNotesCategories]
+    if (context.createCategoryIsActive) {
       const newId = userNotesCategoriesCopy.length + 1
       userNotesCategoriesCopy.push({
         id: newId,
-        name: categoryNameValue,
-        color: colorSelected,
+        name: context.categoryNameValue,
+        color: context.colorSelected,
       })
     } else {
       const categoryIndex = userNotesCategoriesCopy.findIndex(searchCategory)
       if (categoryIndex !== -1) {
         userNotesCategoriesCopy[categoryIndex] = {
           ...userNotesCategoriesCopy[categoryIndex],
-          name: categoryNameValue,
-          color: colorSelected,
+          name: context.categoryNameValue,
+          color: context.colorSelected,
         }
       }
     }
-    setUserNotesCategories(userNotesCategoriesCopy)
+    context.setUserNotesCategories(userNotesCategoriesCopy)
     props.setEditCategory(false)
   }
 
   const handleCancelButton = () => {
-    setColorSelected("")
-    setCategoryNameValue("")
+    context.setColorSelected("")
+    context.setCategoryNameValue("")
     props.setEditCategory(false)
   }
+
   const handleDeleteButton = () => {
-    const userNotesCategoriesCopy = [...userNotesCategories]
+    const userNotesCategoriesCopy = [...context.userNotesCategories]
     const categoryIndex = userNotesCategoriesCopy.findIndex(
-      (category) => category.id === categoryIdSelected
+      (category) => category.id === context.categoryIdSelected
     )
     if (categoryIndex !== -1) {
       userNotesCategoriesCopy.splice(categoryIndex, 1)
-      setUserNotesCategories(userNotesCategoriesCopy)
+      context.setUserNotesCategories(userNotesCategoriesCopy)
       props.setEditCategory(false)
     }
   }
@@ -98,14 +90,14 @@ export const AddCategory = (props: AddCategoryProps) => {
   return (
     <div
       className={`flex h-20 w-full flex-col items-center justify-center ${
-        createCategoryIsActive ? "border-b-2" : ""
+        context.createCategoryIsActive ? "border-b-2" : ""
       }`}
     >
       <div className="flex h-1/2 w-full flex-row items-center justify-center">
         <input
           type="text"
           className="h-6 w-[80%] rounded-md border-[1px] border-myBlack pl-2 focus:outline-none"
-          value={categoryNameValue}
+          value={context.categoryNameValue}
           onChange={handleInputChange}
         />
         <button

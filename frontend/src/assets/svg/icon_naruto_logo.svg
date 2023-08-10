@@ -1,18 +1,2 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
- "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="48.000000pt" height="48.000000pt" viewBox="0 0 48.000000 48.000000"
- preserveAspectRatio="xMidYMid meet">
-
-<g transform="translate(0.000000,48.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-<path d="M185 406 c-60 -27 -91 -74 -135 -203 -23 -68 -39 -127 -35 -133 4 -6
-58 -10 133 -10 138 0 177 11 214 61 63 85 1 209 -105 209 -79 0 -125 -91 -77
--153 55 -69 159 -14 107 58 -18 24 -40 10 -33 -20 8 -31 -10 -41 -35 -19 -39
-35 -11 94 44 94 14 0 38 -11 54 -24 22 -19 28 -32 28 -64 0 -98 -120 -136
--195 -61 -59 60 -49 158 22 209 54 39 112 40 184 4 l52 -26 31 23 c17 12 31
-28 31 35 0 22 -20 27 -39 10 -23 -21 -34 -20 -81 4 -45 23 -120 26 -165 6z
-m-87 -304 c-38 -4 -41 -1 -28 34 l11 28 24 -29 23 -30 -30 -3z"/>
-</g>
-</svg>
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke:#020202;stroke-miterlimit:10;stroke-width:1.91px;}</style></defs><circle class="cls-1" cx="12" cy="4.34" r="2.86"/><circle class="cls-1" cx="19.64" cy="16.75" r="2.86"/><circle class="cls-1" cx="4.36" cy="16.75" r="2.86"/><path class="cls-1" d="M6,19.09a8.59,8.59,0,0,0,12,0"/><path class="cls-1" d="M14.82,4.82a8.57,8.57,0,0,1,5.77,8.11,6.71,6.71,0,0,1-.08,1.1"/><path class="cls-1" d="M3.49,14a6.71,6.71,0,0,1-.08-1.1A8.57,8.57,0,0,1,9.18,4.82"/></svg>

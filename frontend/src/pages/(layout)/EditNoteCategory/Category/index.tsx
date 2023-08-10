@@ -32,7 +32,7 @@ export const Category = (props: CategoryProps) => {
 
   return (
     <div
-      className="flex h-fit min-h-[20px] w-[90%] items-center justify-between self-center 
+      className="flex h-fit min-h-[20px] w-[95%] items-center justify-between self-center 
       border-b-2 py-1 pl-2 font-nunitoRegular"
     >
       {editCategory ? (

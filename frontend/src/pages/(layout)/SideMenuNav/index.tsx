@@ -12,7 +12,7 @@ export const SideMenuNav = () => {
     <div className="flex h-full w-1/4 max-w-250px flex-col justify-between rounded-xl bg-myBgWhite">
       <div className="flex h-1/2 w-full flex-col items-center justify-start rounded-t-xl">
         <figure className="my-8">
-          <img src={iconLogo} alt="" className="h-12" />
+          <img src={iconLogo} alt="" className="filter-orange h-12" />
         </figure>
         <nav className="w-full">
           <NavButton buttonName="home" href="/home" imgSrc={iconHome} />

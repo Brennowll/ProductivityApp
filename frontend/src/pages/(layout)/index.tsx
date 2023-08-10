@@ -5,6 +5,7 @@ import { GlobalStateContext } from "../../store/GlobalStateProvider"
 import { EditTask } from "./EditTask"
 import { EditNote } from "./EditNote"
 import { EditNoteCategory } from "./EditNoteCategory"
+import { EditEvent } from "./EditEvent"
 import { SideMenuNav } from "./SideMenuNav"
 import { SearchUserBar } from "./SearchUserBar"
 
@@ -15,14 +16,19 @@ import { Calendar } from "../calendar"
 import { Settings } from "../settings"
 
 export const Layout = () => {
-  const { editTaskIsOpen, editNoteIsOpen, editNoteCategoryIsOpen } =
-    useContext(GlobalStateContext)
+  const {
+    editTaskIsOpen,
+    editNoteIsOpen,
+    editNoteCategoryIsOpen,
+    editEventIsOpen,
+  } = useContext(GlobalStateContext)
 
   return (
     <div className="relative flex h-screen w-screen items-center justify-center bg-myBgLightGray">
       {editTaskIsOpen ? <EditTask /> : null}
       {editNoteIsOpen ? <EditNote /> : null}
       {editNoteCategoryIsOpen ? <EditNoteCategory /> : null}
+      {editEventIsOpen ? <EditEvent /> : null}
       <div className="m-8 flex h-100-minus-4rem w-full flex-row items-center justify-center">
         <SideMenuNav />
         <div className="ml-4 flex h-full w-full flex-col">
