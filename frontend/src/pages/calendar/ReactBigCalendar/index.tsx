@@ -5,6 +5,7 @@ import moment from "moment"
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import "./style.css"
+import { useLocation } from "react-router-dom"
 
 interface ReactBigCalendarProps {
   localizer: DateLocalizer
@@ -26,6 +27,12 @@ export const ReactBigCalendar: React.FC<ReactBigCalendarProps> = ({
     setEditEventIsOpen,
     setCreateEventIsActived,
   } = useContext(GlobalStateContext)
+
+  const location = useLocation()
+  const shadowIfCalendarPath =
+    location.pathname === "/calendar"
+      ? "shadow-md h-9/10 w-11/12 "
+      : "h-9/10 w-full  border-2 border-gray-300"
 
   const handleSelectSlot: (slotInfo: { start: Date; end: Date }) => void =
     useCallback(
@@ -68,8 +75,8 @@ export const ReactBigCalendar: React.FC<ReactBigCalendarProps> = ({
 
   return (
     <div
-      className="h-9/10 w-11/12 rounded-lg border-4 border-myOrange
-      p-10 shadow-lg"
+      className={`rounded-lg
+  bg-myLightGray p-10 ${shadowIfCalendarPath}`}
     >
       <div className="h-full w-full">
         <Calendar

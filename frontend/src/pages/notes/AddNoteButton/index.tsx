@@ -35,19 +35,27 @@ export const AddNoteButton = () => {
     setEditNoteIsOpen(true)
   }
 
+  const isHome = location.pathname === "/home"
+  const buttonClassIfHome = isHome
+    ? "w-full h-[68px] my-1 rounded-xl border-gray-300"
+    : "h-52 w-80 rounded-lg  border-transparent"
+  const divClassIfHome = isHome ? "h-12" : "h-1/2 bg-zinc-300"
+  const imgClassIfHome = isHome ? "filter-medium-gray" : "filter-light-gray "
+
   return (
     <button
-      className="flex h-52 w-80 items-center justify-center
-      rounded-lg border-2 border-transparent bg-myLightGray
+      className={`flex items-center
+      justify-center border-2 bg-myLightGray
       p-5 transition-colors ease-in-out
-      hover:border-slate-500 active:bg-gray-300 "
+      hover:border-gray-400 active:bg-gray-300
+      ${buttonClassIfHome}`}
       onClick={handleButtonClick}
     >
       <div
-        className="flex h-1/2 w-1/2 items-center justify-center
-        rounded-lg bg-zinc-300"
+        className={`flex w-1/2 items-center
+        justify-center rounded-lg ${divClassIfHome}`}
       >
-        <img src={iconMore} alt="" className="filter-light-gray h-full" />
+        <img src={iconMore} alt="" className={`h-full ${imgClassIfHome}`} />
       </div>
     </button>
   )

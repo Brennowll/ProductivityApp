@@ -25,6 +25,11 @@ export const Notes = () => {
     (noteCategory) => noteCategory.name === secondEndPoint
   )
 
+  const isHome = location.pathname === "/home"
+  const sectionClassIfHome = isHome
+    ? "h-full w-full"
+    : "h-[calc(100%-40px)] w-[calc(100%-100px)]"
+
   const filteredNotes = category
     ? userNotes.filter((note) => note.categoryId === category.id)
     : userNotes
@@ -43,29 +48,46 @@ export const Notes = () => {
     setEditNoteCategoryIsOpen(true)
   }
 
+  const notesContainerClassIfHome = isHome
+    ? "grid-cols-1 py-2"
+    : "mt-4 grid-cols-4 gap-x-16 gap-y-5"
+
   return (
-    <section className="h-[calc(100%-40px)] w-[calc(100%-100px)]">
+    <section className={sectionClassIfHome}>
       <div className="grid h-full w-full grid-cols-1 content-start">
-        <nav
-          className="mb-4 flex h-8 w-full flex-row items-center
-          justify-between"
-        >
-          <div>
-            <NotesNavButton categoryName="all" categoryColor="DarkGray" />
-            {notesNavButtonsMap}
-          </div>
-          <div className="h-5">
-            <button
-              className="rounded-md border-2 border-transparent
-              transition-colors ease-in-out hover:border-myDarkGray"
-              onClick={handleEditNoteCategoriesButton}
+        {isHome ? (
+          <header className="flex h-14 w-full items-center">
+            <h2
+              className="font-nunitoRegular text-xl font-bold tracking-wider
+                text-slate-900"
             >
-              <img src={iconThreeDots} alt="" className="filter-gray h-5" />
-            </button>
-          </div>
-        </nav>
+              MY NOTES
+            </h2>
+          </header>
+        ) : (
+          <>
+            <nav
+              className="mb-4 flex h-8 w-full flex-row items-center
+              justify-between"
+            >
+              <div>
+                <NotesNavButton categoryName="all" categoryColor="DarkGray" />
+                {notesNavButtonsMap}
+              </div>
+              <div className="h-5">
+                <button
+                  className="rounded-md border-2 border-transparent
+                  transition-colors ease-in-out hover:border-myDarkGray"
+                  onClick={handleEditNoteCategoriesButton}
+                >
+                  <img src={iconThreeDots} alt="" className="filter-gray h-5" />
+                </button>
+              </div>
+            </nav>
+          </>
+        )}
         <div className="w-full border-b-[1px] border-myBlack"></div>
-        <div className="mt-4 grid h-full w-full grid-cols-4 gap-x-16 gap-y-5">
+        <div className={`grid h-full w-full ${notesContainerClassIfHome}`}>
           {mapFilteredNotes}
           <AddNoteButton />
         </div>

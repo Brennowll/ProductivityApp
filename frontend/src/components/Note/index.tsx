@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { GlobalStateContext } from "../../store/GlobalStateProvider"
+import { useLocation } from "react-router-dom"
 
 interface NoteProps {
   id: number
@@ -35,31 +36,55 @@ export const Note = (props: NoteProps) => {
     return category ? `bg-my${category.color}` : "bg-myDarkGray"
   }
 
+  const location = useLocation()
+  const isHome = location.pathname === "/home"
+  const buttonClassIfHome = isHome
+    ? "my-1 h-[68px] border-gray-300 rounded-xl hover:border-gray-400"
+    : "shadow-md h-52 rounded-lg border-transparent hover:border-gray-300"
+
   return (
     <button
-      className="w-[calc(20rem + 5px)] flex h-52 flex-col items-start rounded-lg 
-      border-2 border-gray-300 bg-myLightGray p-5 shadow-lg
-      transition-colors ease-in-out hover:border-gray-500 active:bg-gray-300"
+      className={`w-[calc(20rem + 5px)] flex flex-col items-start rounded-lg 
+      border-2 bg-myLightGray p-5
+      transition-colors ease-in-out active:bg-gray-300
+      ${buttonClassIfHome}`}
       onClick={handleButtonClick}
     >
-      <div className="flex h-9 w-full flex-row items-center">
-        <div
-          className={`mr-3 h-4 w-4 flex-shrink-0 rounded-full 
+      {isHome ? (
+        <div className="flex h-9 w-full flex-row items-center">
+          <div
+            className={`mr-3 h-4 w-4 flex-shrink-0 rounded-full
+                ${getCategoryColorClass(props.categoryId)}`}
+          ></div>
+          <h3
+            className="line-clamp-1 text-start font-nunitoRegular text-base
+            tracking-wide text-slate-900"
+          >
+            {props.title}
+          </h3>
+        </div>
+      ) : (
+        <>
+          <div className="flex h-9 w-full flex-row items-center">
+            <div
+              className={`mr-3 h-4 w-4 flex-shrink-0 rounded-full 
           ${getCategoryColorClass(props.categoryId)}`}
-        ></div>
-        <h3
-          className="line-clamp-1 pt-1 text-start font-nunitoRegular text-xl
+            ></div>
+            <h3
+              className="line-clamp-1 pt-1 text-start font-nunitoRegular text-xl
           font-semibold tracking-wide text-slate-900"
-        >
-          {props.title}
-        </h3>
-      </div>
-      <p
-        className="line-clamp-5 h-[120px] w-full text-left font-nunitoRegular
+            >
+              {props.title}
+            </h3>
+          </div>
+          <p
+            className="line-clamp-5 h-[120px] w-full text-left font-nunitoRegular
         text-base text-slate-700"
-      >
-        {props.description}
-      </p>
+          >
+            {props.description}
+          </p>
+        </>
+      )}
     </button>
   )
 }

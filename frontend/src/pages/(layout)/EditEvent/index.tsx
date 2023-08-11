@@ -15,7 +15,6 @@ export const EditEvent = () => {
     createEventIsActived,
     setEditEventIsOpen,
     eventSelected,
-    setEventSelected,
     myCalendarEvents,
     setMyCalendarEvents,
   } = useContext(GlobalStateContext)

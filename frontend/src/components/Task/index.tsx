@@ -3,6 +3,7 @@ import { useContext } from "react"
 import { GlobalStateContext } from "../../store/GlobalStateProvider"
 import iconCheck from "/src/assets/svg/icon_check.svg"
 import iconThreeDots from "/src/assets/svg/icon_three_dots.svg"
+import { useLocation } from "react-router-dom"
 
 interface SingleTaskProps {
   taskId: number
@@ -44,10 +45,16 @@ export const Task = (props: SingleTaskProps) => {
 
   const specificTaskOptionsId = `taskOptions${props.taskId}`
 
+  const location = useLocation()
+  const isHome = location.pathname === "/home"
+  const classIfHome = isHome
+    ? "my-1 border-2 border-gray-300"
+    : "my-2 shadow-md"
+
   return (
     <div
-      className="relative my-2 flex h-auto min-h-16 w-full flex-row items-start
-        rounded-xl bg-myBgLightGray shadow-md"
+      className={`relative flex h-auto min-h-16 w-full flex-row items-start
+        rounded-xl bg-myBgLightGray ${classIfHome}`}
     >
       <button
         className="m-4 h-8 w-8 rounded-full active:pt-1"
