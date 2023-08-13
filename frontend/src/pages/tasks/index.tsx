@@ -44,8 +44,8 @@ export const Tasks = () => {
       </header>
 
       <div
-        className="text-myDarkGrayy flex h-full w-full flex-col border-y-[1px]
-      border-myBlack py-2 text-center font-nunitoRegular"
+        className="flex h-full w-full flex-col overflow-y-auto border-y-[1px]
+      border-myBlack py-2 text-center font-nunitoRegular  text-myDarkGray "
       >
         {checkTaskExists}
       </div>

@@ -176,7 +176,7 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
     end: new Date(),
     title: "",
   })
-  const [editEventIsOpen, setEditEventIsOpen] = useState<boolean>(true)
+  const [editEventIsOpen, setEditEventIsOpen] = useState<boolean>(false)
   const [createEventIsActived, setCreateEventIsActived] =
     useState<boolean>(false)
 

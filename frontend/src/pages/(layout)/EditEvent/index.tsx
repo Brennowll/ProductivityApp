@@ -1,14 +1,28 @@
-import { useContext, useState, useEffect } from "react"
+import { useContext, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import { EditLayout } from "../EditLayout"
 import { EditEventButton } from "./EditEventButton"
 
-interface CalendarEvent {
-  id: number
-  start: Date
-  end: Date
-  title: string
-}
+const eventSchema = z.object({
+  id: z.number().optional(),
+  start: z.date().optional(),
+  end: z.date().optional(),
+  title: z
+    .string()
+    .nonempty("The title is required.")
+    .min(5, "Title must have at least 5 characters.")
+    .max(200, "Title exceeds character limit, Max 200.")
+    .refine((value) => value.split("\n").length <= 10, {
+      message: `Title can have a maximum of ${10} lines.`,
+    })
+    .refine((value) => value.trim() !== "", "Task text cannot be only spaces."),
+})
+
+type CalendarEvent = z.infer<typeof eventSchema>
 
 export const EditEvent = () => {
   const {
@@ -19,23 +33,24 @@ export const EditEvent = () => {
     setMyCalendarEvents,
   } = useContext(GlobalStateContext)
 
-  const [titleAreaValue, setTitleAreaValue] = useState<string>("")
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<CalendarEvent>({
+    resolver: zodResolver(eventSchema),
+  })
 
   useEffect(() => {
-    setTitleAreaValue(eventSelected.title)
-  }, [eventSelected.title])
+    setValue("title", eventSelected.title)
+  }, [eventSelected, setValue])
 
   const findEventById = (
     calendarId: number,
     events: CalendarEvent[]
   ): CalendarEvent | undefined => {
     return events.find((event) => event.id === calendarId)
-  }
-
-  const handleEventTitleChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setTitleAreaValue(event.target.value)
   }
 
   const updateEvent = (
@@ -73,7 +88,7 @@ export const EditEvent = () => {
     setEditEventIsOpen(false)
   }
 
-  const handleSaveButtonClick = () => {
+  const onSubmit = (data: CalendarEvent) => {
     const myCalendarEventsCopy = [...myCalendarEvents]
 
     if (createEventIsActived) {
@@ -85,14 +100,14 @@ export const EditEvent = () => {
         id: newId,
         start: eventSelected.start,
         end: eventSelected.end,
-        title: titleAreaValue,
+        title: data.title,
       })
     } else {
       updateEvent(
         eventSelected.id,
         eventSelected.start,
         eventSelected.end,
-        titleAreaValue,
+        data.title,
         myCalendarEventsCopy
       )
     }
@@ -106,18 +121,23 @@ export const EditEvent = () => {
 
   return (
     <EditLayout>
-      <div
+      <form
         className="z-50 mx-4 flex h-full w-full flex-col rounded-lg
-          py-4"
+        py-4"
+        onSubmit={handleSubmit(onSubmit)}
       >
         <textarea
-          className="mb-1 h-full w-full resize-none rounded-md border-2
-            p-3 align-text-top font-nunitoRegular
-            focus:outline-none"
-          value={titleAreaValue}
-          onChange={handleEventTitleChange}
+          className={`mb-1 h-full w-full resize-none rounded-md border-2
+          p-3 align-text-top font-nunitoRegular
+          focus:outline-none ${errors.title && "border-myRed"}`}
           placeholder="Put your event title here.."
+          {...register("title")}
         />
+        {errors.title && (
+          <p className="mb-1 font-nunitoRegular text-xs text-myRed">
+            {errors.title.message}
+          </p>
+        )}
         <input
           type="text"
           className="mb-1 h-8 w-full rounded-md border-2
@@ -146,12 +166,12 @@ export const EditEvent = () => {
             />
           ) : null}
           <EditEventButton
+            isSubmit={true}
             buttonText={saveButtonText}
-            onClick={handleSaveButtonClick}
             backgroundColor="bg-myBlue"
           />
         </div>
-      </div>
+      </form>
     </EditLayout>
   )
 }

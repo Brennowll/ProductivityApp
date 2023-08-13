@@ -20,6 +20,7 @@ export const ColorButton = (props: ColorButtonProps) => {
       <button
         className={`h-4 w-4 rounded-full ${tailwindColorClass} ${isActive}`}
         onClick={handleColorButtonClick}
+        type="button"
       ></button>
     </div>
   )

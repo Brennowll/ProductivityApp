@@ -16,7 +16,7 @@ export const ColorButton = (props: ColorButtonProps) => {
   }
 
   return (
-    <div className="flex h-7 w-full items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       <button
         className={`h-4 w-4 rounded-full ${tailwindColorClass} ${isActive}`}
         onClick={handleColorButtonClick}

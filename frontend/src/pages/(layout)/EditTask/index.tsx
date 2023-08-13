@@ -1,6 +1,25 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import { EditLayout } from "../EditLayout"
+
+const taskSchema = z.object({
+  id: z.number().optional(),
+  taskText: z
+    .string()
+    .nonempty("The task text is required.")
+    .min(5, "Task must have at least 5 characters.")
+    .max(400, "Task exceeds character limit, Max 400.")
+    .refine((value) => value.split("\n").length <= 10, {
+      message: `Task text can have a maximum of ${10} lines.`,
+    })
+    .refine((value) => value.trim() !== "", "Task text cannot be only spaces."),
+})
+
+type UserTask = z.infer<typeof taskSchema>
 
 export const EditTask = () => {
   const {
@@ -9,20 +28,21 @@ export const EditTask = () => {
     taskIdSelected,
     setEditTaskIsOpen,
     editTaskTextValue,
-    setEditTaskTextValue,
     createTaskIsActive,
   } = useContext(GlobalStateContext)
 
-  const handleTextAreaChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setEditTaskTextValue(event.target.value)
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<UserTask>({
+    resolver: zodResolver(taskSchema),
+  })
 
-  interface UserTask {
-    id: number
-    taskText: string
-  }
+  useEffect(() => {
+    setValue("taskText", editTaskTextValue)
+  }, [editTaskTextValue, setValue])
 
   const findTaskById = (
     taskId: number,
@@ -42,7 +62,7 @@ export const EditTask = () => {
     }
   }
 
-  const saveTask = () => {
+  const onSubmit = (data: UserTask) => {
     const userTasksCopy = [...userTasks]
 
     if (createTaskIsActive) {
@@ -52,10 +72,10 @@ export const EditTask = () => {
           : 1
       userTasksCopy.push({
         id: newId,
-        taskText: editTaskTextValue,
+        taskText: data.taskText,
       })
     } else {
-      updateTask(taskIdSelected, editTaskTextValue, userTasksCopy)
+      updateTask(taskIdSelected, data.taskText, userTasksCopy)
     }
 
     setUserTasks(userTasksCopy)
@@ -67,18 +87,24 @@ export const EditTask = () => {
 
   return (
     <EditLayout>
-      <div
+      <form
         className="z-50 mx-4 flex h-full w-full flex-col rounded-lg
-          py-4"
+        py-4"
+        onSubmit={handleSubmit(onSubmit)}
       >
         <textarea
           id="editCreateTaskTextArea"
-          className="h-full w-full resize-none rounded-md border-2
-          p-3 align-text-top font-nunitoRegular focus:outline-none"
-          value={editTaskTextValue}
-          onChange={handleTextAreaChange}
+          className={`h-full w-full resize-none rounded-md border-2
+          p-3 align-text-top font-nunitoRegular focus:outline-none
+          ${errors.taskText && "border-myRed"}`}
           placeholder="Put your task here.."
+          {...register("taskText")}
         />
+        {errors.taskText && (
+          <p className="font-nunitoRegular text-myRed">
+            {errors.taskText.message}
+          </p>
+        )}
         <div className="space flex h-16 w-full items-end justify-end">
           <button
             className="h-10 w-24 transform rounded-md bg-gray-400
@@ -92,12 +118,12 @@ export const EditTask = () => {
             className="ml-3 h-10 w-24 transform rounded-md
             bg-myBlue font-nunitoRegular text-white transition-all
             hover:scale-105 active:scale-100"
-            onClick={saveTask}
+            type="submit"
           >
             {saveButtonText}
           </button>
         </div>
-      </div>
+      </form>
     </EditLayout>
   )
 }

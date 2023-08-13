@@ -40,7 +40,7 @@ export const Note = (props: NoteProps) => {
   const isHome = location.pathname === "/home"
   const buttonClassIfHome = isHome
     ? "my-1 h-[68px] border-gray-300 rounded-xl hover:border-gray-400"
-    : "shadow-md h-52 rounded-lg border-transparent hover:border-gray-300"
+    : "shadow-md h-52 rounded-lg border-transparent hover:border-gray-400"
 
   return (
     <button

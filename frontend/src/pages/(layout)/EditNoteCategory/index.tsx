@@ -1,4 +1,5 @@
 import { useContext } from "react"
+
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import { EditLayout } from "../EditLayout"
 import { Category } from "./Category"

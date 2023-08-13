@@ -53,7 +53,7 @@ export const Task = (props: SingleTaskProps) => {
 
   return (
     <div
-      className={`relative flex h-auto min-h-16 w-full flex-row items-start
+      className={`flex h-auto min-h-16 w-full flex-row items-start
         rounded-xl bg-myBgLightGray ${classIfHome}`}
     >
       <button
@@ -69,7 +69,10 @@ export const Task = (props: SingleTaskProps) => {
       </button>
 
       <div className="flex h-auto min-h-16 w-full items-center py-2">
-        <p className="font-nunitoRegular text-base text-slate-900">
+        <p
+          className="line-clamp-4 break-all text-left
+        font-nunitoRegular text-base text-slate-900"
+        >
           {props.taskText}
         </p>
       </div>
@@ -83,7 +86,7 @@ export const Task = (props: SingleTaskProps) => {
             src={iconThreeDots}
             alt=""
             className="filter-gray h-6 rounded border-2 border-transparent
-            transition-colors ease-in-out hover:border-myDarkGray
+            transition-colors ease-in-out hover:border-gray-300
             "
             onClick={handleShowTaskOptions}
           />

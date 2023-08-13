@@ -54,7 +54,7 @@ export const Notes = () => {
 
   return (
     <section className={sectionClassIfHome}>
-      <div className="grid h-full w-full grid-cols-1 content-start">
+      <div className="grid h-[calc(100%-20px)] w-full grid-cols-1 content-start">
         {isHome ? (
           <header className="flex h-14 w-full items-center">
             <h2
@@ -67,7 +67,7 @@ export const Notes = () => {
         ) : (
           <>
             <nav
-              className="mb-4 flex h-8 w-full flex-row items-center
+              className="mb-4 mt-2 flex h-8 w-full flex-row items-center
               justify-between"
             >
               <div>
@@ -87,7 +87,9 @@ export const Notes = () => {
           </>
         )}
         <div className="w-full border-b-[1px] border-myBlack"></div>
-        <div className={`grid h-full w-full ${notesContainerClassIfHome}`}>
+        <div
+          className={`grid h-full w-full overflow-y-auto ${notesContainerClassIfHome}`}
+        >
           {mapFilteredNotes}
           <AddNoteButton />
         </div>
