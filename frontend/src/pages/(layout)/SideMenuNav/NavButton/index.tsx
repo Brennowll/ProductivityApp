@@ -29,18 +29,18 @@ export const NavButton = (props: Props) => {
     >
       <Link to={props.href}>
         <div
-          className="ml-3 flex flex-row items-center
-          justify-start text-myDarkGray"
+          className="ml-6 flex flex-row items-center text-myDarkGray
+          sm:ml-3 sm:justify-center lg:justify-start"
         >
           <img
             src={props.imgSrc}
             alt=""
-            className={`mx-3 h-9 transition-all duration-700
-            ease-in-out ${isActiveIconClass}`}
+            className={` ml-2 mr-5 h-9
+            transition-all duration-700 ease-in-out ${isActiveIconClass}`}
           />
           <p
             className={`p-3 font-nunitoXBold uppercase
-            transition-all duration-700 ease-in-out
+            transition-all duration-700 ease-in-out sm:hidden lg:block
             ${isActiveTextClass}`}
           >
             {props.buttonName}

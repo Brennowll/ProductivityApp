@@ -30,7 +30,7 @@ export const Tasks = () => {
   const isHome = location.pathname === "/home"
   const sectionClassIfHome = isHome
     ? "h-full w-full"
-    : "h-[calc(100%-40px)] w-[calc(100%-100px)]"
+    : "h-[calc(100%-10px)] w-[calc(100%-40px)] lg:h-[calc(100%-40px)] lg:w-[calc(100%-100px)] sm:h-[calc(100%-30px)] sm:w-[calc(100%-75px)]"
 
   return (
     <section className={`grid grid-cols-1 content-start ${sectionClassIfHome}`}>

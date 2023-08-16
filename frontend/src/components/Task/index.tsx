@@ -27,7 +27,11 @@ export const Task = (props: SingleTaskProps) => {
 
   const handleDeleteTask = () => {
     const userTasksCopy = [...userTasks]
-    for (let taskNumber = 0; taskNumber < userTasksCopy.length; taskNumber++) {
+    for (
+      let taskNumber = 0;
+      taskNumber < userTasksCopy.length;
+      taskNumber++
+    ) {
       if (userTasksCopy[taskNumber].id === props.taskId) {
         userTasksCopy.splice(taskNumber, 1)
         break
@@ -47,23 +51,29 @@ export const Task = (props: SingleTaskProps) => {
 
   const location = useLocation()
   const isHome = location.pathname === "/home"
-  const classIfHome = isHome
+  const containerClassIfHome = isHome
     ? "my-1 border-2 border-gray-300"
     : "my-2 shadow-md"
+
+  const buttonCheckClassIfHome = isHome
+    ? "my-4 mx-2 sm:mx-2 2xl:mx-5"
+    : "m-4"
+  const optionsClassIfHome = isHome ? "mx-2 sm:mx-2 2xl:mx-5" : "mx-5"
 
   return (
     <div
       className={`flex h-auto min-h-16 w-full flex-row items-start
-        rounded-xl bg-myBgLightGray ${classIfHome}`}
+        rounded-xl bg-myBgLightGray ${containerClassIfHome}`}
     >
       <button
-        className="m-4 h-8 w-8 rounded-full active:pt-1"
+        className={`h-8 w-5 shrink-0 rounded-full active:pt-1 2xl:h-8 2xl:w-6
+        ${buttonCheckClassIfHome}`}
         onClick={handleDeleteTask}
       >
         <img
           src={iconCheck}
           alt=""
-          className="filter-orange bg hover:filter-green h-6 transition-all
+          className="filter-orange hover:filter-green h-6 transition-all
           duration-700 ease-in-out"
         />
       </button>
@@ -79,8 +89,8 @@ export const Task = (props: SingleTaskProps) => {
 
       <div className="relative">
         <button
-          className="mx-5 my-5 h-6 w-6 rounded-md active:bg-zinc-300
-        "
+          className={`my-5 h-6 w-6 rounded-md active:bg-zinc-300
+          ${optionsClassIfHome}`}
         >
           <img
             src={iconThreeDots}

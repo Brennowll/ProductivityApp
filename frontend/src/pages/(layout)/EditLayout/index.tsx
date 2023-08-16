@@ -11,8 +11,9 @@ export const EditLayout = ({ children }: EditLayoutProps) => {
       items-center justify-center bg-black bg-opacity-40"
     >
       <div
-        className="relative flex h-96 w-1/3 items-center
-        rounded-lg bg-myLightGray opacity-100"
+        className="relative flex h-96 min-w-[200px] max-w-[400px]
+        items-center rounded-lg bg-myLightGray opacity-100
+        sm:min-w-[500px] sm:max-w-none md:min-w-[600px]"
       >
         <div
           className="absolute -left-3 -top-3 h-3/5 w-4/5

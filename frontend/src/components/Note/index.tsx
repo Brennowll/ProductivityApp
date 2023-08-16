@@ -44,8 +44,8 @@ export const Note = (props: NoteProps) => {
 
   return (
     <button
-      className={`w-[calc(20rem + 5px)] flex flex-col items-start rounded-lg 
-      border-2 bg-myLightGray p-5
+      className={`w-[calc(20rem + 5px)] flex flex-col items-start 
+      rounded-lg border-2 bg-myLightGray p-5 
       transition-colors ease-in-out active:bg-gray-300
       ${buttonClassIfHome}`}
       onClick={handleButtonClick}

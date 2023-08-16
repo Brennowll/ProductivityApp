@@ -8,8 +8,11 @@ import { AddNoteButton } from "./AddNoteButton"
 import iconThreeDots from "/src/assets/svg/icon_three_dots.svg"
 
 export const Notes = () => {
-  const { userNotesCategories, userNotes, setEditNoteCategoryIsOpen } =
-    useContext(GlobalStateContext)
+  const {
+    userNotesCategories,
+    userNotes,
+    setEditNoteCategoryIsOpen,
+  } = useContext(GlobalStateContext)
 
   const notesNavButtonsMap = userNotesCategories.map((category) => (
     <NotesNavButton
@@ -24,11 +27,6 @@ export const Notes = () => {
   const category = userNotesCategories.find(
     (noteCategory) => noteCategory.name === secondEndPoint
   )
-
-  const isHome = location.pathname === "/home"
-  const sectionClassIfHome = isHome
-    ? "h-full w-full"
-    : "h-[calc(100%-40px)] w-[calc(100%-100px)]"
 
   const filteredNotes = category
     ? userNotes.filter((note) => note.categoryId === category.id)
@@ -48,9 +46,14 @@ export const Notes = () => {
     setEditNoteCategoryIsOpen(true)
   }
 
+  const isHome = location.pathname === "/home"
+  const sectionClassIfHome = isHome
+    ? "h-full w-full"
+    : "h-[calc(100%-10px)] w-[calc(100%-40px)] lg:h-[calc(100%-40px)] lg:w-[calc(100%-100px)] sm:h-[calc(100%-30px)] sm:w-[calc(100%-75px)]"
+
   const notesContainerClassIfHome = isHome
     ? "grid-cols-1 py-2"
-    : "mt-4 grid-cols-4 gap-x-16 gap-y-5"
+    : "mt-4 gap-x-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-8 2xl:gap-x-16 gap-y-5"
 
   return (
     <section className={sectionClassIfHome}>
@@ -71,7 +74,10 @@ export const Notes = () => {
               justify-between"
             >
               <div>
-                <NotesNavButton categoryName="all" categoryColor="DarkGray" />
+                <NotesNavButton
+                  categoryName="all"
+                  categoryColor="DarkGray"
+                />
                 {notesNavButtonsMap}
               </div>
               <div className="h-5">
@@ -80,7 +86,11 @@ export const Notes = () => {
                   transition-colors ease-in-out hover:border-myDarkGray"
                   onClick={handleEditNoteCategoriesButton}
                 >
-                  <img src={iconThreeDots} alt="" className="filter-gray h-5" />
+                  <img
+                    src={iconThreeDots}
+                    alt=""
+                    className="filter-gray h-5"
+                  />
                 </button>
               </div>
             </nav>

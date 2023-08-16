@@ -31,26 +31,28 @@ export const ReactBigCalendar: React.FC<ReactBigCalendarProps> = ({
   const location = useLocation()
   const shadowIfCalendarPath =
     location.pathname === "/calendar"
-      ? "shadow-md h-9/10 w-11/12 "
+      ? "sm:shadow-md p-3 sm:p-7 lg:p-10 sm:bg-myLightGray h-[calc(100%-10px)] w-[calc(100%-40px)] lg:h-[calc(100%-40px)] lg:w-[calc(100%-100px)] sm:h-[calc(100%-30px)] sm:w-[calc(100%-75px)] "
       : "h-9/10 w-full  border-2 border-gray-300"
 
-  const handleSelectSlot: (slotInfo: { start: Date; end: Date }) => void =
-    useCallback(
-      ({ start, end }) => {
-        const title = ""
-        const id = myCalendarEvents.length + 1
+  const handleSelectSlot: (slotInfo: {
+    start: Date
+    end: Date
+  }) => void = useCallback(
+    ({ start, end }) => {
+      const title = ""
+      const id = myCalendarEvents.length + 1
 
-        setEventSelected({ id, start, end, title })
-        setCreateEventIsActived(true)
-        setEditEventIsOpen(true)
-      },
-      [
-        myCalendarEvents,
-        setCreateEventIsActived,
-        setEventSelected,
-        setEditEventIsOpen,
-      ]
-    )
+      setEventSelected({ id, start, end, title })
+      setCreateEventIsActived(true)
+      setEditEventIsOpen(true)
+    },
+    [
+      myCalendarEvents,
+      setCreateEventIsActived,
+      setEventSelected,
+      setEditEventIsOpen,
+    ]
+  )
 
   const handleSelectEvent: (event: Event) => void = useCallback(
     (event) => {
@@ -74,10 +76,7 @@ export const ReactBigCalendar: React.FC<ReactBigCalendarProps> = ({
   )
 
   return (
-    <div
-      className={`rounded-lg
-  bg-myLightGray p-10 ${shadowIfCalendarPath}`}
-    >
+    <div className={`rounded-lg ${shadowIfCalendarPath}`}>
       <div className="h-full w-full">
         <Calendar
           defaultDate={defaultDate}
@@ -88,7 +87,8 @@ export const ReactBigCalendar: React.FC<ReactBigCalendarProps> = ({
           onSelectSlot={handleSelectSlot}
           selectable
           dayPropGetter={(date) =>
-            moment(date).format("YYYY MM DD") === moment().format("YYYY MM DD")
+            moment(date).format("YYYY MM DD") ===
+            moment().format("YYYY MM DD")
               ? { className: "rbc-selected-day" }
               : {}
           }

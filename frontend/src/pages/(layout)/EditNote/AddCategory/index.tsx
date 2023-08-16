@@ -76,7 +76,8 @@ export const AddCategory = () => {
       color: colorSelected,
     })
     setUserNotesCategories(userNotesCategoriesCopy)
-    setCreateCategoryIsOpen(false)
+    const categoryOptions = document.querySelector("#categoryOptions")
+    categoryOptions?.classList.toggle("hidden")
   }
 
   const handleCancelButton = () => {
@@ -107,6 +108,7 @@ export const AddCategory = () => {
         </button>
         <button
           className="ml-1 flex h-6 w-6 items-center justify-center rounded-md border-2 bg-myBlue hover:border-myBlack"
+          onClick={handleSubmit(onSubmit)}
           type="submit"
         >
           <img src={iconSingleCheck} alt="" className="filter-white h-5" />

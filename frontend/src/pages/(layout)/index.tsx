@@ -29,9 +29,9 @@ export const Layout = () => {
       {editNoteIsOpen ? <EditNote /> : null}
       {editNoteCategoryIsOpen ? <EditNoteCategory /> : null}
       {editEventIsOpen ? <EditEvent /> : null}
-      <div className="m-8 flex h-100-minus-4rem w-full flex-row items-center justify-center">
+      <div className="m-2 flex h-100-minus-1rem w-full flex-row items-center justify-center gap-4 sm:m-8 sm:h-100-minus-4rem">
         <SideMenuNav />
-        <div className="ml-4 flex h-full w-full flex-col">
+        <div className="flex h-full w-full flex-col gap-2 sm:gap-4">
           <SearchUserBar />
           <div className="flex h-full flex-col items-center justify-center overflow-y-auto rounded-xl bg-myBgWhite">
             <Routes>

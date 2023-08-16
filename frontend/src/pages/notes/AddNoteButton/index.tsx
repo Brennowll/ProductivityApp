@@ -38,9 +38,11 @@ export const AddNoteButton = () => {
   const isHome = location.pathname === "/home"
   const buttonClassIfHome = isHome
     ? "w-full h-[68px] my-1 rounded-xl border-gray-300"
-    : "h-52 w-80 rounded-lg  border-transparent"
+    : "h-52 w-[calc(20rem + 5px)] rounded-lg  border-transparent"
   const divClassIfHome = isHome ? "h-12" : "h-1/2 bg-zinc-300"
-  const imgClassIfHome = isHome ? "filter-medium-gray" : "filter-light-gray "
+  const imgClassIfHome = isHome
+    ? "filter-medium-gray"
+    : "filter-light-gray "
 
   return (
     <button
@@ -55,7 +57,11 @@ export const AddNoteButton = () => {
         className={`flex w-1/2 items-center
         justify-center rounded-lg ${divClassIfHome}`}
       >
-        <img src={iconMore} alt="" className={`h-full ${imgClassIfHome}`} />
+        <img
+          src={iconMore}
+          alt=""
+          className={`h-full ${imgClassIfHome}`}
+        />
       </div>
     </button>
   )
