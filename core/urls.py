@@ -1,8 +1,21 @@
-from django.urls import path
-from core import views
+from django.urls import path, include
+from rest_framework import routers
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from core.views import UserViewSet, TaskViewSet, NoteCategoryViewSet, NoteViewSet, CalendarEventViewSet
 
 app_name = 'core'
 
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet, basename='user')
+router.register(r'tasks', TaskViewSet, basename='task')
+router.register(r'note-categories', NoteCategoryViewSet,
+                basename='note-categorie')
+router.register(r'notes', NoteViewSet, basename='note')
+router.register(r'calendar-events', CalendarEventViewSet,
+                basename='calendar-event')
+
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', include(router.urls)),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

@@ -32,7 +32,7 @@ export const ReactBigCalendar: React.FC<ReactBigCalendarProps> = ({
   const shadowIfCalendarPath =
     location.pathname === "/calendar"
       ? "sm:shadow-md p-3 sm:p-7 lg:p-10 sm:bg-myLightGray h-[calc(100%-10px)] w-[calc(100%-40px)] lg:h-[calc(100%-40px)] lg:w-[calc(100%-100px)] sm:h-[calc(100%-30px)] sm:w-[calc(100%-75px)] "
-      : "h-9/10 w-full  border-2 border-gray-300"
+      : "h-9/10 w-full bg-myLightGray border-2 border-gray-300"
 
   const handleSelectSlot: (slotInfo: {
     start: Date
