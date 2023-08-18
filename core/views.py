@@ -1,5 +1,7 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import viewsets, status
 from django.contrib.auth.models import User
 import bleach
 from core.serializers import (
@@ -19,6 +21,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return User.objects.filter(username=self.request.user.username)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_user(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TaskViewSet(viewsets.ModelViewSet):

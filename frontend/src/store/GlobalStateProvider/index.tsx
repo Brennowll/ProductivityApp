@@ -3,8 +3,25 @@ import React, {
   ReactNode,
   SetStateAction,
   createContext,
+  useEffect,
   useState,
 } from "react"
+import Cookies from "js-cookie"
+import { api } from "../QueryClient"
+
+const getData = async (
+  token: string,
+  endPoint: string,
+  setState: Dispatch<SetStateAction<any>>
+) => {
+  const response = await api.get(endPoint, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  return setState(response.data)
+}
 
 interface UserTask {
   id: number
@@ -32,6 +49,9 @@ interface CalendarEvent {
 }
 
 interface GlobalStateContextType {
+  userIsLogged: boolean | null
+  setUserIsLogged: Dispatch<SetStateAction<boolean | null>>
+
   userTasks: UserTask[]
   setUserTasks: Dispatch<SetStateAction<UserTask[]>>
   editTaskIsOpen: boolean
@@ -90,9 +110,8 @@ interface GlobalStateContextType {
   setCreateEventIsActived: Dispatch<SetStateAction<boolean>>
 }
 
-export const GlobalStateContext = createContext<GlobalStateContextType>(
-  {} as GlobalStateContextType
-)
+export const GlobalStateContext =
+  createContext<GlobalStateContextType>({} as GlobalStateContextType)
 
 interface GlobalStateProviderProps {
   children: ReactNode
@@ -101,48 +120,36 @@ interface GlobalStateProviderProps {
 const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   children,
 }: GlobalStateProviderProps) => {
-  const [userTasks, setUserTasks] = useState<UserTask[]>([
-    { id: 1, taskText: "Limpar a mesa" },
-    { id: 2, taskText: "Levar o lixo para fora" },
-    { id: 3, taskText: "Walk with my dog" },
-    { id: 4, taskText: "Meditate before sleeping" },
-  ])
+  const [userIsLogged, setUserIsLogged] = useState<boolean | null>(
+    true
+  )
+
+  const [userTasks, setUserTasks] = useState<UserTask[]>([])
   const [editTaskIsOpen, setEditTaskIsOpen] = useState<boolean>(false)
   const [taskIdSelected, setTaskIdSelected] = useState<number>(0)
-  const [editTaskTextValue, setEditTaskTextValue] = useState<string>("")
-  const [createTaskIsActive, setCreateTaskIsActive] = useState<boolean>(false)
+  const [editTaskTextValue, setEditTaskTextValue] =
+    useState<string>("")
+  const [createTaskIsActive, setCreateTaskIsActive] =
+    useState<boolean>(false)
 
   const [userNotesCategories, setUserNotesCategories] = useState<
     UserNoteCategory[]
-  >([
-    { id: 1, name: "family", color: "Red" },
-    { id: 2, name: "work", color: "Green" },
-  ])
+  >([])
   const [notesCategorySelected, setNotesCategorySelected] =
     useState<string>("all")
 
-  const [userNotes, setUserNotes] = useState<UserNote[]>([
-    {
-      id: 1,
-      title: "Titulo muito muito muito grande",
-      description:
-        "Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description",
-      categoryId: 1,
-    },
-    { id: 2, title: "Titulo", description: "Description", categoryId: 1 },
-    { id: 3, title: "Titulo", description: "Description", categoryId: 1 },
-    { id: 4, title: "Titulo", description: "Description", categoryId: 2 },
-    { id: 5, title: "Titulo", description: "Description", categoryId: 2 },
-    { id: 6, title: "Titulo", description: "Description", categoryId: 2 },
-  ])
+  const [userNotes, setUserNotes] = useState<UserNote[]>([])
   const [editNoteIsOpen, setEditNoteIsOpen] = useState<boolean>(false)
   const [noteIdSelected, setNoteIdSelected] = useState<number>(0)
 
-  const [editNoteTitleValue, setEditNoteTitleValue] = useState<string>("")
+  const [editNoteTitleValue, setEditNoteTitleValue] =
+    useState<string>("")
   const [editNoteDescriptionValue, setEditNoteDescriptionValue] =
     useState<string>("")
-  const [editNoteCategoryId, setEditNoteCategoryId] = useState<number>(0)
-  const [createNoteIsActive, setCreateNoteIsActive] = useState<boolean>(false)
+  const [editNoteCategoryId, setEditNoteCategoryId] =
+    useState<number>(0)
+  const [createNoteIsActive, setCreateNoteIsActive] =
+    useState<boolean>(false)
 
   const [createCategoryIsOpen, setCreateCategoryIsOpen] =
     useState<boolean>(false)
@@ -152,37 +159,45 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
 
   const [createCategoryIsActive, setCreateCategoryIsActive] =
     useState<boolean>(false)
-  const [categoryIdSelected, setCategoryIdSelected] = useState<number>(0)
+  const [categoryIdSelected, setCategoryIdSelected] =
+    useState<number>(0)
   const [colorSelected, setColorSelected] = useState<string>("")
-  const [categoryNameValue, setCategoryNameValue] = useState<string>("")
+  const [categoryNameValue, setCategoryNameValue] =
+    useState<string>("")
 
-  const [myCalendarEvents, setMyCalendarEvents] = useState<CalendarEvent[]>([
-    {
-      id: 0,
-      title: "All Day Event very long title",
-      start: new Date(2023, 7, 0),
-      end: new Date(2023, 7, 1),
-    },
-    {
-      id: 1,
-      title: "Long Event",
-      start: new Date(2023, 7, 7),
-      end: new Date(2023, 7, 10),
-    },
-  ])
+  const [myCalendarEvents, setMyCalendarEvents] = useState<
+    CalendarEvent[]
+  >([])
   const [eventSelected, setEventSelected] = useState<CalendarEvent>({
     id: 0,
     start: new Date(),
     end: new Date(),
     title: "",
   })
-  const [editEventIsOpen, setEditEventIsOpen] = useState<boolean>(false)
+  const [editEventIsOpen, setEditEventIsOpen] =
+    useState<boolean>(false)
   const [createEventIsActived, setCreateEventIsActived] =
     useState<boolean>(false)
+
+  useEffect(() => {
+    const token = Cookies.get("access_token")
+    if (token) {
+      setUserIsLogged(true)
+      getData(token, "/tasks/", setUserTasks)
+      getData(token, "/note-categories/", setUserNotesCategories)
+      getData(token, "/notes/", setUserNotes)
+      getData(token, "/calendar-events/", setMyCalendarEvents)
+    } else {
+      setUserIsLogged(false)
+    }
+  }, [])
 
   return (
     <GlobalStateContext.Provider
       value={{
+        userIsLogged,
+        setUserIsLogged,
+
         userTasks,
         setUserTasks,
         editTaskIsOpen,

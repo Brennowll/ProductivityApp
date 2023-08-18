@@ -9,6 +9,7 @@ import { EditEvent } from "./EditEvent"
 import { SideMenuNav } from "./SideMenuNav"
 import { SearchUserBar } from "./SearchUserBar"
 
+import { Login } from "../login"
 import { Home } from "../home"
 import { Tasks } from "../tasks"
 import { Notes } from "../notes"
@@ -17,13 +18,16 @@ import { Settings } from "../settings"
 
 export const Layout = () => {
   const {
+    userIsLogged,
     editTaskIsOpen,
     editNoteIsOpen,
     editNoteCategoryIsOpen,
     editEventIsOpen,
   } = useContext(GlobalStateContext)
 
-  return (
+  return userIsLogged === false ? (
+    <Login />
+  ) : (
     <div className="relative flex h-screen w-screen items-center justify-center bg-myBgLightGray">
       {editTaskIsOpen ? <EditTask /> : null}
       {editNoteIsOpen ? <EditNote /> : null}
@@ -38,7 +42,10 @@ export const Layout = () => {
               <Route path="/" element={<Navigate to="/home" />} />
               <Route path="/home" element={<Home />} />
               <Route path="/tasks" element={<Tasks />} />
-              <Route path="/notes" element={<Navigate to="/notes/all" />} />
+              <Route
+                path="/notes"
+                element={<Navigate to="/notes/all" />}
+              />
               <Route path="/notes/*" element={<Notes />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/settings" element={<Settings />} />
