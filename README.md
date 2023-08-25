@@ -59,9 +59,9 @@
 
 Welcome to the Productivity App, a powerful online tool designed to supercharge your efficiency and organization. This app provides an all-in-one solution for managing your daily tasks, creating important notes, and keeping track of your calendar appointments, all in one convenient place.
 
-![Notes Page](https://github.com/Brennowll/RepositoriesScreenshots/raw/191cdb11f40ecff98f80c0498aef71c960b1b9c9/ProductivityAppNotes.png)
+![Home Page](https://github.com/Brennowll/RepositoriesScreenshots/blob/39183b91d0e8b9506411fba93a0a7717237ddbeb/ProdAppHome.png)
 
-![Tasks Page](https://github.com/Brennowll/RepositoriesScreenshots/raw/e8d663efae7d7d65198b4ff42a49d4c7e8b7bbe1/ProductivityAppTasks.png)
+![Tasks Page](https://github.com/Brennowll/RepositoriesScreenshots/blob/39183b91d0e8b9506411fba93a0a7717237ddbeb/ProdAppTasks.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -155,11 +155,9 @@ Capture your thoughts, ideas, and reminders using the note-taking feature. Categ
 
 ### Managing Calendar
 
-- In development
+![Calendar Schedule](https://github.com/Brennowll/RepositoriesScreenshots/blob/e8668df2475ec4f7d693d07c04b4d1493e8b2b79/ProdAppCalendar.png)
 
-### Customization
-
-- In development
+Create events, appointment reminders and customize notes for each event.
 
 For more in-depth information and detailed features, please refer to our [documentation](link_to_documentation).
 
@@ -167,9 +165,9 @@ For more in-depth information and detailed features, please refer to our [docume
 
 Here's a glimpse into the future plans for the **Productivity App**. We're committed to continuously improving and enhancing the user experience. Check out the upcoming features and developments on our roadmap:
 
-- [ ] Calendar Page: Create a fully functional calendar page where users can schedule and manage their appointments and events.
-- [ ] Home Page Enhancement: Develop a dynamic home page that provides a summary of tasks, notes, and calendar events for quick reference.
-- [ ] Login System: Implement a robust user authentication and login system to secure user data and enable personalized experiences.
+- [ ] Implement change of username and email. In addition to making it possible to change the user's password
+- [ ] Bring configuration options to customize the user experience based on your personal tastes
+- [ ] Create search functionality, making it possible to find notes, tasks or events from the search bar
 
 We're dedicated to making the **Productivity App** even more valuable and versatile. Stay tuned for these exciting updates and more to come!
 
