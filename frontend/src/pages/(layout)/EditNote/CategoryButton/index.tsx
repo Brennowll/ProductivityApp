@@ -20,6 +20,7 @@ export const CategoryButton = (props: CategoryButtonProps) => {
 
   return (
     <button
+      type="button"
       className="flex h-7 w-full items-center border-b-2 pl-2 
       font-nunitoRegular hover:bg-zinc-100"
       onClick={handleButtonClick}

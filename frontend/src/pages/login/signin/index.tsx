@@ -1,6 +1,11 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Link } from "react-router-dom"
+import { useMutation } from "react-query"
+import { api } from "../../../store/QueryClient"
+import axios from "axios"
+import { useState } from "react"
 
 const userSchema = z
   .object({
@@ -67,16 +72,49 @@ const userSchema = z
 type User = z.infer<typeof userSchema>
 
 export const SignIn = () => {
+  const [usernameApiError, setUsernameApiError] = useState<
+    string | null
+  >(null)
+  const [emailApiError, setEmailApiError] = useState<string | null>(
+    null
+  )
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<User>({
     resolver: zodResolver(userSchema),
   })
 
+  const { mutate, isSuccess, isError } = useMutation({
+    mutationFn: async (data: User) => {
+      const response = await api.post("/create-user/", {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      })
+
+      return response.data
+    },
+    onSuccess: () => {
+      reset()
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data.username) {
+          setUsernameApiError(error.response?.data.username[0])
+        }
+        if (error.response?.data.email) {
+          setEmailApiError(error.response?.data.email[0])
+        }
+      }
+    },
+  })
+
   const onSubmit = (data: User) => {
-    console.log(data)
+    mutate(data)
   }
 
   return (
@@ -101,6 +139,14 @@ export const SignIn = () => {
           {errors.username.message}
         </p>
       )}
+      {usernameApiError != null && (
+        <p
+          className="mb-1 pb-2 pl-3 font-nunitoRegular
+          text-xs text-myRed"
+        >
+          {usernameApiError}
+        </p>
+      )}
       <input
         type="text"
         className={`mb-1 h-8 w-full rounded-md border-2
@@ -116,6 +162,14 @@ export const SignIn = () => {
           text-xs text-myRed"
         >
           {errors.email.message}
+        </p>
+      )}
+      {emailApiError != null && (
+        <p
+          className="mb-1 pb-2 pl-3 font-nunitoRegular
+          text-xs text-myRed"
+        >
+          {emailApiError}
         </p>
       )}
       <input
@@ -152,6 +206,24 @@ export const SignIn = () => {
           {errors.confirmPassword.message}
         </p>
       )}
+      {isError &&
+        usernameApiError === null &&
+        emailApiError === null && (
+          <p
+            className="mb-1 pb-2 pl-3 font-nunitoRegular
+            text-xs text-myRed"
+          >
+            Um erro aconteceu, tente novamente
+          </p>
+        )}
+      {isSuccess && (
+        <p
+          className="mb-1 pb-2 pl-3 font-nunitoRegular
+            text-xs text-myGreen"
+        >
+          User created succesfully. Please login
+        </p>
+      )}
       <button
         type="submit"
         className="mb-1 mt-4 h-10 w-full rounded-md border-2
@@ -161,14 +233,16 @@ export const SignIn = () => {
         SIGN IN
       </button>
       <div className="my-1 h-[1px] w-full bg-myBlack"></div>
-      <button
-        type="button"
-        className="my-1 h-10 w-full rounded-md border-2
+      <Link to={"/login"}>
+        <button
+          type="button"
+          className="my-1 h-10 w-full rounded-md border-2
         border-gray-300 bg-myWhite font-nunitoRegular
         text-myBlack transition-all ease-in-out hover:h-12"
-      >
-        LOGIN
-      </button>
+        >
+          LOGIN
+        </button>
+      </Link>
     </form>
   )
 }

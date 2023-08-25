@@ -1,13 +1,21 @@
 import { useContext } from "react"
+import { useLocation } from "react-router-dom"
+import { useQuery } from "react-query"
+import Cookies from "js-cookie"
 
 import { GlobalStateContext } from "../../store/GlobalStateProvider"
 import { Task } from "../../components/Task"
 import iconAddTask from "/src/assets/svg/icon_add_task.svg"
-import { useLocation } from "react-router-dom"
+import { api } from "../../store/QueryClient"
+import { LoadingSpinner } from "../../components/LoadingSpinner"
+
+interface TaskInterface {
+  id: number
+  taskText: string
+}
 
 export const Tasks = () => {
   const {
-    userTasks,
     setEditTaskIsOpen,
     setCreateTaskIsActive,
     setEditTaskTextValue,
@@ -19,12 +27,30 @@ export const Tasks = () => {
     setCreateTaskIsActive(true)
   }
 
-  const mapUserTasks = userTasks.map((task) => (
+  const { data: tasks, isFetching: isTasksFetching } = useQuery<
+    TaskInterface[]
+  >({
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      const token = Cookies.get("access_token")
+      const response = await api.get("/tasks/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      return response.data
+    },
+  })
+
+  const mapUserTasks = tasks?.map((task) => (
     <Task key={task.id} taskId={task.id} taskText={task.taskText} />
   ))
 
   const checkTaskExists =
-    userTasks.length > 0 ? mapUserTasks : "YOU DONT'T HAVE ANY TASK"
+    tasks && tasks.length > 0
+      ? mapUserTasks
+      : "YOU DONT'T HAVE ANY TASK"
 
   const location = useLocation()
   const isHome = location.pathname === "/home"
@@ -32,8 +58,14 @@ export const Tasks = () => {
     ? "h-full w-full"
     : "h-[calc(100%-10px)] w-[calc(100%-40px)] lg:h-[calc(100%-40px)] lg:w-[calc(100%-100px)] sm:h-[calc(100%-30px)] sm:w-[calc(100%-75px)]"
 
+  if (isTasksFetching) {
+    return <LoadingSpinner />
+  }
+
   return (
-    <section className={`grid grid-cols-1 content-start ${sectionClassIfHome}`}>
+    <section
+      className={`grid grid-cols-1 content-start ${sectionClassIfHome}`}
+    >
       <header className="flex h-14 w-full items-center">
         <h2
           className="font-nunitoRegular text-xl font-bold tracking-wider

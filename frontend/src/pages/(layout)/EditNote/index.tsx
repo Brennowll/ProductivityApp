@@ -2,15 +2,18 @@ import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient, useMutation } from "react-query"
+import Cookies from "js-cookie"
 
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
+import { api } from "../../../store/QueryClient"
 import { EditLayout } from "../EditLayout"
 import { EditNoteButton } from "./EditNoteButton"
 import { CategoryButton } from "./CategoryButton"
 import iconArrow from "/src/assets/svg/icon_arrow_down.svg"
 import { AddCategory } from "./AddCategory"
 
-interface UserNoteCategory {
+interface NoteCategory {
   id: number
   name: string
   color: string
@@ -26,7 +29,10 @@ const noteSchema = z.object({
     .refine((value) => value.split("\n").length <= 1, {
       message: `Task text can have a maximum of ${1} lines.`,
     })
-    .refine((value) => value.trim() !== "", "Task text cannot be only spaces."),
+    .refine(
+      (value) => value.trim() !== "",
+      "Task text cannot be only spaces."
+    ),
   description: z
     .string()
     .nonempty("Description is required.")
@@ -42,19 +48,16 @@ const noteSchema = z.object({
   categoryId: z.number().optional(),
 })
 
-type UserNote = z.infer<typeof noteSchema>
+type NoteType = z.infer<typeof noteSchema>
 
 export const EditNote = () => {
   const {
-    userNotes,
-    setUserNotes,
     noteIdSelected,
     setEditNoteIsOpen,
     editNoteTitleValue,
     editNoteDescriptionValue,
     editNoteCategoryId,
     createNoteIsActive,
-    userNotesCategories,
     createCategoryIsOpen,
     setCreateCategoryIsOpen,
   } = useContext(GlobalStateContext)
@@ -64,7 +67,7 @@ export const EditNote = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<UserNote>({
+  } = useForm<NoteType>({
     resolver: zodResolver(noteSchema),
   })
 
@@ -73,53 +76,88 @@ export const EditNote = () => {
     setValue("description", editNoteDescriptionValue)
   }, [setValue, editNoteTitleValue, editNoteDescriptionValue])
 
-  const findNoteById = (
-    noteId: number,
-    notes: UserNote[]
-  ): UserNote | undefined => {
-    return notes.find((note) => note.id === noteId)
-  }
+  const queryClient = useQueryClient()
 
-  const updateNote = (
-    noteId: number,
-    newNoteTitle: string,
-    newNoteDescription: string,
-    newNoteCategoryId: number,
-    notes: UserNote[]
-  ) => {
-    const noteToUpdate = findNoteById(noteId, notes)
-    if (noteToUpdate) {
-      noteToUpdate.title = newNoteTitle
-      noteToUpdate.description = newNoteDescription
-      noteToUpdate.categoryId = newNoteCategoryId
-    }
-  }
-
-  const onSubmit = (data: UserNote) => {
-    const userNotesCopy = [...userNotes]
-
-    if (createNoteIsActive) {
-      const newId =
-        userNotesCopy.length > 0
-          ? userNotesCopy[userNotesCopy.length - 1].id + 1
-          : 1
-      userNotesCopy.push({
-        id: newId,
-        title: data.title,
-        description: data.description,
-        categoryId: editNoteCategoryId,
-      })
-    } else {
-      updateNote(
-        noteIdSelected,
-        data.title,
-        data.description,
-        editNoteCategoryId,
-        userNotesCopy
+  const createNoteMutation = useMutation({
+    mutationFn: async (data: NoteType) => {
+      const token = Cookies.get("access_token")
+      const response = await api.post(
+        "/notes/",
+        {
+          title: data.title,
+          description: data.description,
+          categoryId: editNoteCategoryId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
-    }
 
-    setUserNotes(userNotesCopy)
+      return response.data
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["notes"])
+      setEditNoteIsOpen(false)
+    },
+  })
+
+  const patchNoteMutation = useMutation({
+    mutationFn: async (data: NoteType) => {
+      const token = Cookies.get("access_token")
+      const response = await api.patch(
+        `/notes/${noteIdSelected}/`,
+        {
+          title: data.title,
+          description: data.description,
+          categoryId: editNoteCategoryId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      return response.data
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["notes"])
+      setEditNoteIsOpen(false)
+    },
+  })
+
+  const deleteNoteMutation = useMutation(
+    async () => {
+      const token = Cookies.get("access_token")
+      await api.delete(`/notes/${noteIdSelected}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["notes"])
+        setEditNoteIsOpen(false)
+      },
+    }
+  )
+
+  const onSubmit = (data: NoteType) => {
+    if (createNoteIsActive) {
+      createNoteMutation.mutate(data)
+    } else {
+      patchNoteMutation.mutate(data)
+    }
+  }
+
+  const onDelete = () => {
+    deleteNoteMutation.mutate()
+  }
+
+  const handleCancelButtonClick = () => {
     setEditNoteIsOpen(false)
   }
 
@@ -128,28 +166,13 @@ export const EditNote = () => {
     categoryOptions?.classList.toggle("hidden")
   }
 
-  const handleCancelButtonClick = () => {
-    setEditNoteIsOpen(false)
-  }
+  const notesCategories = queryClient.getQueryData<NoteCategory[]>([
+    "notesCategories",
+  ])
 
-  const handleDeleteButtonClick = () => {
-    const userNotesCopy = [...userNotes]
-    for (
-      let notePosition = 0;
-      notePosition < userNotesCopy.length;
-      notePosition++
-    ) {
-      if (userNotesCopy[notePosition].id === noteIdSelected) {
-        userNotesCopy.splice(notePosition, 1)
-        break
-      }
-    }
-    setUserNotes(userNotesCopy)
-    setEditNoteIsOpen(false)
-  }
-
-  const categoryButtonMap = userNotesCategories.map((category) => (
+  const categoryButtonMap = notesCategories?.map((category) => (
     <CategoryButton
+      key={category.id}
       id={category.id}
       name={category.name}
       color={category.color}
@@ -163,11 +186,11 @@ export const EditNote = () => {
     setCreateCategoryIsOpen(true)
   }
 
-  const searchCategory = (category: UserNoteCategory) => {
+  const searchCategory = (category: NoteCategory) => {
     return category.id === editNoteCategoryId
   }
 
-  const editNoteCategory = userNotesCategories.find(searchCategory)
+  const editNoteCategory = notesCategories?.find(searchCategory)
   const editNoteCategoryColor = editNoteCategory
     ? "bg-my" + editNoteCategory?.color
     : "bg-myDarkGray"
@@ -196,7 +219,9 @@ export const EditNote = () => {
         <textarea
           className={`mb-1 h-full w-full resize-none rounded-md border-2
             p-3 align-text-top font-nunitoRegular
-            focus:outline-none ${errors.description && "border-myRed"}`}
+            focus:outline-none ${
+              errors.description && "border-myRed"
+            }`}
           placeholder="Put your description here.."
           {...register("description")}
         />
@@ -213,7 +238,9 @@ export const EditNote = () => {
             className={`ml-2 h-3 w-3 rounded-full ${editNoteCategoryColor}`}
           ></div>
           <p className="h-full w-full pl-3 font-nunitoRegular">
-            {editNoteCategory ? editNoteCategory.name : "Not selected"}
+            {editNoteCategory
+              ? editNoteCategory.name
+              : "Not selected"}
           </p>
           <button
             type="button"
@@ -249,7 +276,7 @@ export const EditNote = () => {
           {createNoteIsActive === false ? (
             <EditNoteButton
               buttonText="Delete"
-              onClick={handleDeleteButtonClick}
+              onClick={onDelete}
               backgroundColor="bg-red-500"
             />
           ) : null}

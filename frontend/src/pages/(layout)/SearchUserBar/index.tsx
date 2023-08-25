@@ -1,8 +1,15 @@
+import { useContext } from "react"
+import { useNavigate } from "react-router-dom"
+import Cookies from "js-cookie"
+
+import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import searchIcon from "/src/assets/svg/icon_search.svg"
 import sideNavIcon from "/src/assets/svg/icon_side_nav.svg"
 import userIcon from "/src/assets/svg/icon_user.svg"
 
 export const SearchUserBar = () => {
+  const { setUserIsLogged } = useContext(GlobalStateContext)
+
   const handleNavIconClick = () => {
     const sideNavContainer = document.getElementById(
       "side-nav-container"
@@ -12,9 +19,22 @@ export const SearchUserBar = () => {
     sideNavContainer?.classList.toggle("flex")
   }
 
+  const handleUserButtonClick = () => {
+    const userMenu = document.getElementById("user-menu")
+    userMenu?.classList.toggle("hidden")
+  }
+
+  const navigate = useNavigate()
+  const handleLogoutClick = () => {
+    Cookies.remove("access_token")
+    Cookies.remove("refresh_token")
+    setUserIsLogged(false)
+    navigate("/login")
+  }
+
   return (
     <div
-      className="flex h-16 flex-row items-center justify-between 
+      className="relative flex h-16 flex-row items-center justify-between 
       rounded-xl bg-myBgWhite"
     >
       <button className="ml-5 flex h-9 w-7 active:pt-1 sm:hidden">
@@ -41,14 +61,32 @@ export const SearchUserBar = () => {
           placeholder="Search"
         />
       </div>
-      <button className="mr-5 h-9 active:pt-1">
+      <button
+        className="mr-5 h-9 active:pt-1"
+        onClick={handleUserButtonClick}
+      >
         <img
           src={userIcon}
           alt=""
-          className="filter-gray hover:filter-orange h-7 transition-all duration-500
-            ease-in-out sm:h-9"
+          className="filter-gray hover:filter-orange h-7
+          transition-all duration-500 ease-in-out sm:h-9"
         />
       </button>
+      <section
+        id="user-menu"
+        className="absolute right-4 top-16 hidden h-fit max-w-xs
+        rounded-lg border-2 border-myDarkGray bg-white p-2"
+      >
+        <button
+          className="h-[2rem] min-w-[10rem] rounded-md
+          bg-myRed font-nunitoRegular text-white
+          transition-all ease-in-out hover:h-9
+          active:h-[2rem]"
+          onClick={handleLogoutClick}
+        >
+          Logout
+        </button>
+      </section>
     </div>
   )
 }

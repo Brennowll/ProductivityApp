@@ -3,24 +3,12 @@ import React, {
   ReactNode,
   SetStateAction,
   createContext,
-  useEffect,
   useState,
 } from "react"
-import Cookies from "js-cookie"
-import { api } from "../QueryClient"
 
-const getData = async (
-  token: string,
-  endPoint: string,
-  setState: Dispatch<SetStateAction<any>>
-) => {
-  const response = await api.get(endPoint, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-
-  return setState(response.data)
+interface UserData {
+  username: string
+  email: string
 }
 
 interface UserTask {
@@ -51,6 +39,8 @@ interface CalendarEvent {
 interface GlobalStateContextType {
   userIsLogged: boolean | null
   setUserIsLogged: Dispatch<SetStateAction<boolean | null>>
+  userData: UserData | null
+  setUserData: Dispatch<SetStateAction<UserData | null>>
 
   userTasks: UserTask[]
   setUserTasks: Dispatch<SetStateAction<UserTask[]>>
@@ -121,8 +111,9 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   children,
 }: GlobalStateProviderProps) => {
   const [userIsLogged, setUserIsLogged] = useState<boolean | null>(
-    true
+    null
   )
+  const [userData, setUserData] = useState<UserData | null>(null)
 
   const [userTasks, setUserTasks] = useState<UserTask[]>([])
   const [editTaskIsOpen, setEditTaskIsOpen] = useState<boolean>(false)
@@ -179,24 +170,13 @@ const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   const [createEventIsActived, setCreateEventIsActived] =
     useState<boolean>(false)
 
-  useEffect(() => {
-    const token = Cookies.get("access_token")
-    if (token) {
-      setUserIsLogged(true)
-      getData(token, "/tasks/", setUserTasks)
-      getData(token, "/note-categories/", setUserNotesCategories)
-      getData(token, "/notes/", setUserNotes)
-      getData(token, "/calendar-events/", setMyCalendarEvents)
-    } else {
-      setUserIsLogged(false)
-    }
-  }, [])
-
   return (
     <GlobalStateContext.Provider
       value={{
         userIsLogged,
         setUserIsLogged,
+        userData,
+        setUserData,
 
         userTasks,
         setUserTasks,

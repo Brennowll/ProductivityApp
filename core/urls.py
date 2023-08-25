@@ -1,8 +1,9 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView, TokenRefreshView
+    TokenRefreshView
 )
+from .views import CustomTokenObtainPairView
 from core.views import (
     UserViewSet, create_user,
     TaskViewSet, NoteCategoryViewSet,
@@ -23,6 +24,6 @@ router.register(r'calendar-events', CalendarEventViewSet,
 urlpatterns = [
     path('', include(router.urls)),
     path('create-user/', create_user, name='create_user'),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

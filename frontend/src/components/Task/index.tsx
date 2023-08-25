@@ -1,9 +1,12 @@
 import { useContext } from "react"
+import { useMutation, useQueryClient } from "react-query"
+import { useLocation } from "react-router-dom"
+import Cookies from "js-cookie"
 
 import { GlobalStateContext } from "../../store/GlobalStateProvider"
 import iconCheck from "/src/assets/svg/icon_check.svg"
 import iconThreeDots from "/src/assets/svg/icon_three_dots.svg"
-import { useLocation } from "react-router-dom"
+import { api } from "../../store/QueryClient"
 
 interface SingleTaskProps {
   taskId: number
@@ -12,32 +15,33 @@ interface SingleTaskProps {
 
 export const Task = (props: SingleTaskProps) => {
   const {
-    userTasks,
-    setUserTasks,
     setEditTaskIsOpen,
     setTaskIdSelected,
     setEditTaskTextValue,
     setCreateTaskIsActive,
   } = useContext(GlobalStateContext)
 
+  const queryClient = useQueryClient()
+  const deleteTaskMutation = useMutation(
+    async () => {
+      const token = Cookies.get("access_token")
+      await api.delete(`/tasks/${props.taskId}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["tasks"])
+        setEditTaskIsOpen(false)
+      },
+    }
+  )
+
   const handleShowTaskOptions = () => {
     const taskOptions = document.getElementById(specificTaskOptionsId)
     taskOptions?.classList.toggle("hidden")
-  }
-
-  const handleDeleteTask = () => {
-    const userTasksCopy = [...userTasks]
-    for (
-      let taskNumber = 0;
-      taskNumber < userTasksCopy.length;
-      taskNumber++
-    ) {
-      if (userTasksCopy[taskNumber].id === props.taskId) {
-        userTasksCopy.splice(taskNumber, 1)
-        break
-      }
-    }
-    setUserTasks(userTasksCopy)
   }
 
   const handleEditTask = () => {
@@ -45,6 +49,10 @@ export const Task = (props: SingleTaskProps) => {
     setTaskIdSelected(props.taskId)
     setCreateTaskIsActive(false)
     setEditTaskIsOpen(true)
+  }
+
+  const handleDeleteTask = () => {
+    deleteTaskMutation.mutate()
   }
 
   const specificTaskOptionsId = `taskOptions${props.taskId}`

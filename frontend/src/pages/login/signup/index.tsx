@@ -1,16 +1,20 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Cookies from "js-cookie"
-import axios from "axios"
 
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import { api } from "../../../store/QueryClient"
+import { Link, redirect, useNavigate } from "react-router-dom"
+import { useMutation } from "react-query"
+import axios from "axios"
 
 const userSchema = z.object({
-  email: z.string().nonempty("Email is required."),
-  // .email("Email is not valid"),
+  email: z
+    .string()
+    .nonempty("Email is required.")
+    .email("Email is not valid"),
   password: z
     .string()
     .nonempty("Password is required.")
@@ -27,23 +31,11 @@ const userSchema = z.object({
 
 type User = z.infer<typeof userSchema>
 
-const fetchLogin = async (email: string, password: string) => {
-  const response = await api.post("/token/", {
-    username: email,
-    password: password,
-  })
-
-  const token = response.data.access
-  const refreshToken = response.data.refresh
-
-  Cookies.set("access_token", token)
-  Cookies.set("refresh_token", refreshToken)
-
-  return response.data
-}
-
 export const SignUp = () => {
   const { setUserIsLogged } = useContext(GlobalStateContext)
+
+  const [loginApiError, setLoginApiError] = useState<string | null>()
+  const navigate = useNavigate()
 
   const {
     register,
@@ -53,9 +45,41 @@ export const SignUp = () => {
     resolver: zodResolver(userSchema),
   })
 
+  const { mutate } = useMutation({
+    mutationFn: async (data: User) => {
+      setLoginApiError(null)
+
+      const response = await api.post("/token/", {
+        username: data.email,
+        password: data.password,
+      })
+
+      return response.data
+    },
+    onSuccess: (data) => {
+      const token = data.access
+      const refreshToken = data.refresh
+
+      Cookies.set("access_token", token)
+      Cookies.set("refresh_token", refreshToken)
+
+      setUserIsLogged(true)
+      navigate("/home")
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data.detail) {
+          setLoginApiError(error.response?.data.detail)
+        }
+      }
+    },
+  })
+
   const onSubmit = (data: User) => {
-    fetchLogin(data.email, data.password)
-    setUserIsLogged(true)
+    mutate({
+      email: data.email,
+      password: data.password,
+    })
   }
 
   return (
@@ -97,6 +121,14 @@ export const SignUp = () => {
           {errors.password.message}
         </p>
       )}
+      {loginApiError != null && (
+        <p
+          className="mb-1 pb-2 pl-3 font-nunitoRegular
+          text-xs text-myRed"
+        >
+          {loginApiError}
+        </p>
+      )}
       <button
         type="submit"
         className="mb-1 mt-4 h-10 w-full rounded-md border-2
@@ -106,14 +138,16 @@ export const SignUp = () => {
         SIGN UP
       </button>
       <div className="my-1 h-[1px] w-full bg-myBlack"></div>
-      <button
-        type="button"
-        className="my-1 h-10 w-full rounded-md border-2
+      <Link to={"/signin"}>
+        <button
+          type="button"
+          className="my-1 h-10 w-full rounded-md border-2
         border-gray-300 bg-myWhite font-nunitoRegular
         text-myBlack transition-all ease-in-out hover:h-12"
-      >
-        SIGN IN
-      </button>
+        >
+          SIGN IN
+        </button>
+      </Link>
     </form>
   )
 }

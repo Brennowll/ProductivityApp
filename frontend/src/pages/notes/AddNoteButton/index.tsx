@@ -1,11 +1,17 @@
 import { useContext } from "react"
 import { useLocation } from "react-router-dom"
+import { useQueryClient } from "react-query"
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import iconMore from "/src/assets/svg/icon_more.svg"
 
+interface NoteCategory {
+  id: number
+  name: string
+  color: string
+}
+
 export const AddNoteButton = () => {
   const {
-    userNotesCategories,
     setEditNoteTitleValue,
     setEditNoteDescriptionValue,
     setEditNoteCategoryId,
@@ -18,8 +24,13 @@ export const AddNoteButton = () => {
   const categoryPathName =
     locationPaths[2] === "all" ? "Not Selected" : locationPaths[2]
 
+  const queryClient = useQueryClient()
+  const noteCategoriesQuery = queryClient.getQueryData<
+    NoteCategory[]
+  >(["notesCategories"])
+
   const getCategoryById = (categoryId: string) => {
-    const category = userNotesCategories.find(
+    const category = noteCategoriesQuery?.find(
       (category) => category.name === categoryId
     )
     return category ? category.id : 0

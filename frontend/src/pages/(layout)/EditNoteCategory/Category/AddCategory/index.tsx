@@ -2,8 +2,11 @@ import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "react-query"
+import Cookies from "js-cookie"
 
 import { GlobalStateContext } from "../../../../../store/GlobalStateProvider"
+import { api } from "../../../../../store/QueryClient"
 import { ColorButton } from "./ColorButton"
 import iconSingleCheck from "/src/assets/svg/icon_single_check.svg"
 import iconDelete from "/src/assets/svg/icon_delete.svg"
@@ -18,7 +21,10 @@ const noteCategorySchema = z.object({
     .refine((value) => value.split("\n").length <= 1, {
       message: `Task text can have a maximum of ${1} lines.`,
     })
-    .refine((value) => value.trim() !== "", "Task text cannot be only spaces."),
+    .refine(
+      (value) => value.trim() !== "",
+      "Task text cannot be only spaces."
+    ),
   color: z.string().optional(),
 })
 
@@ -33,8 +39,6 @@ export const AddCategory = (props: AddCategoryProps) => {
     categoryNameValue,
     colorSelected,
     setColorSelected,
-    userNotesCategories,
-    setUserNotesCategories,
     createCategoryIsActive,
     categoryIdSelected,
     setCategoryNameValue,
@@ -66,40 +70,79 @@ export const AddCategory = (props: AddCategoryProps) => {
     setValue("name", categoryNameValue)
   }, [categoryNameValue, setValue])
 
-  const colorButtonMap = colors.map((color) => (
-    <ColorButton
-      key={color}
-      color={color}
-      active={color === colorSelected}
-      setColorSelected={setColorSelected}
-    />
-  ))
+  const queryClient = useQueryClient()
 
-  const searchCategory = (category: Category) => {
-    return category.id === categoryIdSelected
-  }
-
-  const onSubmit = (data: Category) => {
-    const userNotesCategoriesCopy = [...userNotesCategories]
-    if (createCategoryIsActive) {
-      const newId = userNotesCategoriesCopy.length + 1
-      userNotesCategoriesCopy.push({
-        id: newId,
-        name: data.name,
-        color: colorSelected,
-      })
-    } else {
-      const categoryIndex = userNotesCategoriesCopy.findIndex(searchCategory)
-      if (categoryIndex !== -1) {
-        userNotesCategoriesCopy[categoryIndex] = {
-          ...userNotesCategoriesCopy[categoryIndex],
+  const createNoteCategoryMutation = useMutation({
+    mutationFn: async (data: Category) => {
+      const token = Cookies.get("access_token")
+      const response = await api.post(
+        "/note-categories/",
+        {
           name: data.name,
           color: colorSelected,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      }
+      )
+
+      return response.data
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["notesCategories"])
+      props.setEditCategory(false)
+    },
+  })
+
+  const patchNoteCategoryMutation = useMutation({
+    mutationFn: async (data: Category) => {
+      const token = Cookies.get("access_token")
+      const response = await api.patch(
+        `/note-categories/${categoryIdSelected}/`,
+        {
+          name: data.name,
+          color: colorSelected,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      return response.data
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["notesCategories"])
+      props.setEditCategory(false)
+    },
+  })
+
+  const deleteNoteCategoryMutation = useMutation(
+    async () => {
+      const token = Cookies.get("access_token")
+      await api.delete(`/note-categories/${categoryIdSelected}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["notesCategories"])
+        props.setEditCategory(false)
+      },
     }
-    setUserNotesCategories(userNotesCategoriesCopy)
-    props.setEditCategory(false)
+  )
+
+  const onSubmit = (data: Category) => {
+    if (createCategoryIsActive) {
+      createNoteCategoryMutation.mutate(data)
+    } else {
+      patchNoteCategoryMutation.mutate(data)
+    }
   }
 
   const handleCancelButton = () => {
@@ -109,16 +152,17 @@ export const AddCategory = (props: AddCategoryProps) => {
   }
 
   const handleDeleteButton = () => {
-    const userNotesCategoriesCopy = [...userNotesCategories]
-    const categoryIndex = userNotesCategoriesCopy.findIndex(
-      (category) => category.id === categoryIdSelected
-    )
-    if (categoryIndex !== -1) {
-      userNotesCategoriesCopy.splice(categoryIndex, 1)
-      setUserNotesCategories(userNotesCategoriesCopy)
-      props.setEditCategory(false)
-    }
+    deleteNoteCategoryMutation.mutate()
   }
+
+  const colorButtonMap = colors.map((color) => (
+    <ColorButton
+      key={color}
+      color={color}
+      active={color === colorSelected}
+      setColorSelected={setColorSelected}
+    />
+  ))
 
   return (
     <form
@@ -136,22 +180,28 @@ export const AddCategory = (props: AddCategoryProps) => {
           {...register("name")}
         />
         <button
+          type="button"
           className="ml-1 flex h-6 w-6 items-center justify-center rounded-md border-2 bg-myDarkGray pb-[2px] font-bold text-white hover:border-myBlack"
           onClick={handleCancelButton}
         >
           x
         </button>
         <button
+          type="button"
           className="ml-1 flex h-6 w-6 items-center justify-center rounded-md border-2 bg-myRed hover:border-myBlack"
           onClick={handleDeleteButton}
         >
           <img src={iconDelete} alt="" className="filter-white h-4" />
         </button>
         <button
-          className="ml-1 flex h-6 w-6 items-center justify-center rounded-md border-2 bg-myBlue hover:border-myBlack"
           type="submit"
+          className="ml-1 flex h-6 w-6 items-center justify-center rounded-md border-2 bg-myBlue hover:border-myBlack"
         >
-          <img src={iconSingleCheck} alt="" className="filter-white h-5" />
+          <img
+            src={iconSingleCheck}
+            alt=""
+            className="filter-white h-5"
+          />
         </button>
       </div>
       {errors.name && (
@@ -159,7 +209,9 @@ export const AddCategory = (props: AddCategoryProps) => {
           {errors.name.message}
         </p>
       )}
-      <div className="flex h-10 w-full flex-row ">{colorButtonMap}</div>
+      <div className="flex h-10 w-full flex-row ">
+        {colorButtonMap}
+      </div>
     </form>
   )
 }

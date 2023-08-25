@@ -1,13 +1,19 @@
 import { useContext } from "react"
+import { useQueryClient } from "react-query"
 
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import { EditLayout } from "../EditLayout"
 import { Category } from "./Category"
 import { AddCategory } from "./Category/AddCategory"
 
+interface NoteCategory {
+  id: number
+  name: string
+  color: string
+}
+
 export const EditNoteCategory = () => {
   const {
-    userNotesCategories,
     setEditNoteCategoryIsOpen,
     setColorSelected,
     setCategoryNameValue,
@@ -15,8 +21,14 @@ export const EditNoteCategory = () => {
     createCategoryIsActive,
   } = useContext(GlobalStateContext)
 
-  const categoryMap = userNotesCategories.map((noteCategory) => (
+  const queryClient = useQueryClient()
+  const notesCategories = queryClient.getQueryData<NoteCategory[]>([
+    "notesCategories",
+  ])
+
+  const categoryMap = notesCategories?.map((noteCategory) => (
     <Category
+      key={noteCategory.id}
       id={noteCategory.id}
       name={noteCategory.name}
       color={noteCategory.color}
@@ -50,7 +62,9 @@ export const EditNoteCategory = () => {
           {categoryMap}
           <div className="h-fit min-h-[20px] w-[95%] self-center">
             {createCategoryIsActive ? (
-              <AddCategory setEditCategory={setCreateCategoryIsActive} />
+              <AddCategory
+                setEditCategory={setCreateCategoryIsActive}
+              />
             ) : (
               <button
                 className="mt-1 flex h-fit w-full

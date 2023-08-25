@@ -2,8 +2,11 @@ import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient, useMutation } from "react-query"
+import Cookies from "js-cookie"
 
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
+import { api } from "../../../store/QueryClient"
 import { EditLayout } from "../EditLayout"
 import { EditEventButton } from "./EditEventButton"
 
@@ -19,19 +22,17 @@ const eventSchema = z.object({
     .refine((value) => value.split("\n").length <= 10, {
       message: `Title can have a maximum of ${10} lines.`,
     })
-    .refine((value) => value.trim() !== "", "Task text cannot be only spaces."),
+    .refine(
+      (value) => value.trim() !== "",
+      "Task text cannot be only spaces."
+    ),
 })
 
 type CalendarEvent = z.infer<typeof eventSchema>
 
 export const EditEvent = () => {
-  const {
-    createEventIsActived,
-    setEditEventIsOpen,
-    eventSelected,
-    myCalendarEvents,
-    setMyCalendarEvents,
-  } = useContext(GlobalStateContext)
+  const { createEventIsActived, setEditEventIsOpen, eventSelected } =
+    useContext(GlobalStateContext)
 
   const {
     register,
@@ -53,66 +54,88 @@ export const EditEvent = () => {
     return events.find((event) => event.id === calendarId)
   }
 
-  const updateEvent = (
-    eventId: number,
-    start: Date,
-    end: Date,
-    title: string,
-    events: CalendarEvent[]
-  ) => {
-    const eventToUpdate = findEventById(eventId, events)
-    if (eventToUpdate) {
-      eventToUpdate.start = start
-      eventToUpdate.end = end
-      eventToUpdate.title = title
+  const queryClient = useQueryClient()
+
+  const createEventMutation = useMutation({
+    mutationFn: async (data: CalendarEvent) => {
+      const token = Cookies.get("access_token")
+      const response = await api.post(
+        "/calendar-events/",
+        {
+          start: eventSelected.start,
+          end: eventSelected.end,
+          title: data.title,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      return response.data
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["events"])
+      setEditEventIsOpen(false)
+    },
+  })
+
+  const patchEventMutation = useMutation({
+    mutationFn: async (data: CalendarEvent) => {
+      const token = Cookies.get("access_token")
+      const response = await api.patch(
+        `/calendar-events/${eventSelected.id}/`,
+        {
+          start: eventSelected.start,
+          end: eventSelected.end,
+          title: data.title,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      return response.data
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["events"])
+      setEditEventIsOpen(false)
+    },
+  })
+
+  const deleteEventMutation = useMutation(
+    async () => {
+      const token = Cookies.get("access_token")
+      await api.delete(`/calendar-events/${eventSelected.id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["events"])
+        setEditEventIsOpen(false)
+      },
     }
+  )
+
+  const onSubmit = (data: CalendarEvent) => {
+    if (createEventIsActived) {
+      createEventMutation.mutate(data)
+    } else {
+      patchEventMutation.mutate(data)
+    }
+  }
+
+  const onDelete = () => {
+    deleteEventMutation.mutate()
   }
 
   const handleCancelButtonClick = () => {
-    setEditEventIsOpen(false)
-  }
-
-  const handleDeleteButtonClick = () => {
-    const myCalendarEventsCopy = [...myCalendarEvents]
-    for (
-      let notePosition = 0;
-      notePosition < myCalendarEventsCopy.length;
-      notePosition++
-    ) {
-      if (myCalendarEventsCopy[notePosition].id === eventSelected.id) {
-        myCalendarEventsCopy.splice(notePosition, 1)
-        break
-      }
-    }
-    setMyCalendarEvents(myCalendarEventsCopy)
-    setEditEventIsOpen(false)
-  }
-
-  const onSubmit = (data: CalendarEvent) => {
-    const myCalendarEventsCopy = [...myCalendarEvents]
-
-    if (createEventIsActived) {
-      const newId =
-        myCalendarEventsCopy.length > 0
-          ? myCalendarEventsCopy[myCalendarEventsCopy.length - 1].id + 1
-          : 1
-      myCalendarEventsCopy.push({
-        id: newId,
-        start: eventSelected.start,
-        end: eventSelected.end,
-        title: data.title,
-      })
-    } else {
-      updateEvent(
-        eventSelected.id,
-        eventSelected.start,
-        eventSelected.end,
-        data.title,
-        myCalendarEventsCopy
-      )
-    }
-
-    setMyCalendarEvents(myCalendarEventsCopy)
     setEditEventIsOpen(false)
   }
 
@@ -161,7 +184,7 @@ export const EditEvent = () => {
           {createEventIsActived === false ? (
             <EditEventButton
               buttonText="Delete"
-              onClick={handleDeleteButtonClick}
+              onClick={onDelete}
               backgroundColor="bg-red-500"
             />
           ) : null}

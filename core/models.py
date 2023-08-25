@@ -20,16 +20,8 @@ class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    category = models.ForeignKey(NoteCategory, on_delete=models.PROTECT)
-
-    @property
-    def category_obj(self):
-        if self.category:
-            try:
-                return NoteCategory.objects.get(name=self.category, user=self.user)
-            except NoteCategory.DoesNotExist:
-                pass
-        return None
+    category = models.ForeignKey(
+        NoteCategory, on_delete=models.PROTECT, to_field='id')
 
 
 class CalendarEvent(models.Model):

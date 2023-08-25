@@ -14,7 +14,7 @@ class NoteCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'category_obj')
+    list_display = ('user', 'title', 'category')
     list_filter = ('user', 'category__name')
 
 

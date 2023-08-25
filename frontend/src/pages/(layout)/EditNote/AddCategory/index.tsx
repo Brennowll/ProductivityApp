@@ -2,8 +2,11 @@ import { useState, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient, useMutation } from "react-query"
+import Cookies from "js-cookie"
 
 import { GlobalStateContext } from "../../../../store/GlobalStateProvider"
+import { api } from "../../../../store/QueryClient"
 import { ColorButton } from "./ColorButton"
 import iconSingleCheck from "/src/assets/svg/icon_single_check.svg"
 
@@ -17,21 +20,21 @@ const noteCategorySchema = z.object({
     .refine((value) => value.split("\n").length <= 1, {
       message: `Task text can have a maximum of ${1} lines.`,
     })
-    .refine((value) => value.trim() !== "", "Task text cannot be only spaces."),
+    .refine(
+      (value) => value.trim() !== "",
+      "Task text cannot be only spaces."
+    ),
   color: z.string().optional(),
 })
 
 type Category = z.infer<typeof noteCategorySchema>
 
 export const AddCategory = () => {
-  const {
-    setCreateCategoryIsOpen,
-    userNotesCategories,
-    setUserNotesCategories,
-  } = useContext(GlobalStateContext)
+  const { setCreateCategoryIsOpen } = useContext(GlobalStateContext)
 
   const [colorSelected, setColorSelected] = useState<string>("")
-  const [categoryNameValue, setCategoryNameValue] = useState<string>("")
+  const [categoryNameValue, setCategoryNameValue] =
+    useState<string>("")
 
   const {
     register,
@@ -61,23 +64,41 @@ export const AddCategory = () => {
 
   const colorButtonMap = colors.map((color) => (
     <ColorButton
+      key={color}
       color={color}
       active={color === colorSelected ? true : false}
       setColorSelected={setColorSelected}
     />
   ))
 
+  const queryClient = useQueryClient()
+
+  const createNoteCategoryMutation = useMutation({
+    mutationFn: async (data: Category) => {
+      const token = Cookies.get("access_token")
+      const response = await api.post(
+        "/note-categories/",
+        {
+          name: data.name,
+          color: colorSelected,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      return response.data
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(["notesCategories"])
+      setCreateCategoryIsOpen(false)
+    },
+  })
+
   const onSubmit = (data: Category) => {
-    const userNotesCategoriesCopy = [...userNotesCategories]
-    const newId = userNotesCategoriesCopy.length + 1
-    userNotesCategoriesCopy.push({
-      id: newId,
-      name: data.name,
-      color: colorSelected,
-    })
-    setUserNotesCategories(userNotesCategoriesCopy)
-    const categoryOptions = document.querySelector("#categoryOptions")
-    categoryOptions?.classList.toggle("hidden")
+    createNoteCategoryMutation.mutate(data)
   }
 
   const handleCancelButton = () => {
@@ -111,7 +132,11 @@ export const AddCategory = () => {
           onClick={handleSubmit(onSubmit)}
           type="submit"
         >
-          <img src={iconSingleCheck} alt="" className="filter-white h-5" />
+          <img
+            src={iconSingleCheck}
+            alt=""
+            className="filter-white h-5"
+          />
         </button>
       </div>
       {errors.name && (
@@ -119,7 +144,9 @@ export const AddCategory = () => {
           {errors.name.message}
         </p>
       )}
-      <div className="flex h-10 w-full flex-row ">{colorButtonMap}</div>
+      <div className="flex h-10 w-full flex-row ">
+        {colorButtonMap}
+      </div>
     </form>
   )
 }

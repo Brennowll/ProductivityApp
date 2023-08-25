@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { GlobalStateContext } from "../../store/GlobalStateProvider"
 import { useLocation } from "react-router-dom"
+import { useQueryClient } from "react-query"
 
 interface NoteProps {
   id: number
@@ -9,9 +10,14 @@ interface NoteProps {
   categoryId: number
 }
 
+interface NoteCategory {
+  id: number
+  name: string
+  color: string
+}
+
 export const Note = (props: NoteProps) => {
   const {
-    userNotesCategories,
     setNoteIdSelected,
     setEditNoteTitleValue,
     setEditNoteDescriptionValue,
@@ -29,8 +35,13 @@ export const Note = (props: NoteProps) => {
     setEditNoteIsOpen(true)
   }
 
+  const queryClient = useQueryClient()
+  const notesCategories = queryClient.getQueryData<NoteCategory[]>([
+    "notesCategories",
+  ])
+
   const getCategoryColorClass = (categoryId: number) => {
-    const category = userNotesCategories.find(
+    const category = notesCategories?.find(
       (category) => category.id === categoryId
     )
     return category ? `bg-my${category.color}` : "bg-myDarkGray"
