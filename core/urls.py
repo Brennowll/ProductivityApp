@@ -22,8 +22,9 @@ router.register(r'calendar-events', CalendarEventViewSet,
                 basename='calendar-event')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('create-user/', create_user, name='create_user'),
-    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', include(router.urls)),
+    path('api/create-user/', create_user, name='create_user'),
+    path('api/token/', CustomTokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
