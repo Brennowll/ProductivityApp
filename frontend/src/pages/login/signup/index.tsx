@@ -6,7 +6,7 @@ import Cookies from "js-cookie"
 
 import { GlobalStateContext } from "../../../store/GlobalStateProvider"
 import { api } from "../../../store/QueryClient"
-import { Link, redirect, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useMutation } from "react-query"
 import axios from "axios"
 

@@ -47,13 +47,6 @@ export const EditEvent = () => {
     setValue("title", eventSelected.title)
   }, [eventSelected, setValue])
 
-  const findEventById = (
-    calendarId: number,
-    events: CalendarEvent[]
-  ): CalendarEvent | undefined => {
-    return events.find((event) => event.id === calendarId)
-  }
-
   const queryClient = useQueryClient()
 
   const createEventMutation = useMutation({
